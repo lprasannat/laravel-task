@@ -34,43 +34,29 @@
             <div class="register-box-body">
                 <p class="login-box-msg">Register a new membership</p>
 
-                <form  method="post" action="{{URL::route('registration2')}}">
+                <form  method="post" action="{{URL::route('registration3')}}">
                     <div class="form-group has-feedback">
                         <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-                        <input type="text" class="form-control" name="FullName" placeholder="Full name"  id="fullname">
+                        <input type="text" class="form-control" name="Phonenumber" placeholder="phone number" id="phoneno" required="">
                         <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span id="fullspan"></span>
+                        <span id="phonespan"></span>
 
                     </div>
                     <div class="form-group has-feedback">
-                        <textarea class="form-control" placeholder="Address"  name='Address' id="address"required></textarea>
+                        <input type="email" class="form-control" placeholder="Email"  name='Email' required="" id="mail">
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                        <span id="addressspan"></span>
-                    </div>
-                    <div class="form-group has-feedback">
-                        <input type="text" class="form-control" placeholder="city"  name='City' id="city">
-                        <span class="glyphicon glyphicon-lock form-control-feedback" ></span>
-                        <span id="cityspan"></span>
-                    </div>
-                    <div class="form-group has-feedback">
-                        <select class="form-control" name='State'>
-                            <option>Andhra pradesh</option>
-                            <option>Telangana</option>
-                            <option>Maharastra</option>
-                            <option>Karnataka</option>
-                            <option>Madya Pradesh</option>
-                            <option>Arunachal Pradesh</option>
-                            <option>Kasmir</option>
-                            <option>Kasi</option>
-                        </select>
-                        <span id="statespan"></span>
+                        <span id="emailspan"></span>
                     </div>
                     <div class="row">
                         
                         <!-- /.col -->
                         <div class="col-xs-4">
-
-                            <button type="submit"  id="next" class="btn btn-primary btn-block btn-flat">next</button>
+                            <a href="{{URL::route('registration')}}"><input type="button" value="back"   class="btn btn-primary btn-block btn-flat"></a>
+                            
+                        </div>
+                        <div class="col-xs-4">
+                           
+                            <button type="submit"  id ="next" class="btn btn-primary btn-block btn-flat">next</button>
                         </div>
                         <br>
 
@@ -79,7 +65,7 @@
                 </form>
 
 
-                <a href="{{URL::route('indlogin')}}" class="text-center">I already have a membership</a>
+                <a href="" class="text-center">I already have a membership</a>
             </div>
             <!-- /.form-box -->
         </div>

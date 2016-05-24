@@ -23,6 +23,7 @@
             {
                 color: red;
             }
+
         </style>
     </head>
     <body class="hold-transition register-page">
@@ -34,52 +35,63 @@
             <div class="register-box-body">
                 <p class="login-box-msg">Register a new membership</p>
 
-                <form  method="post" action="{{URL::route('registration2')}}">
+                <form  method="post" action='{{URL::route('values')}}'>
+
+
                     <div class="form-group has-feedback">
                         <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
-                        <input type="text" class="form-control" name="FullName" placeholder="Full name"  id="fullname">
-                        <span class="glyphicon glyphicon-user form-control-feedback"></span>
-                        <span id="fullspan"></span>
+                        <label>FullName </label>
+                        <input type="hidden"  name="FullName"   value='{{$temp['FullName']}}' id="fullname">{{$temp['FullName']}}
 
                     </div>
                     <div class="form-group has-feedback">
-                        <textarea class="form-control" placeholder="Address"  name='Address' id="address"required></textarea>
-                        <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                        <span id="addressspan"></span>
+                        <label>Address</label>
+                        <input type="hidden" name="Address" required>{{$temp['Address']}}</textarea>
                     </div>
                     <div class="form-group has-feedback">
-                        <input type="text" class="form-control" placeholder="city"  name='City' id="city">
-                        <span class="glyphicon glyphicon-lock form-control-feedback" ></span>
-                        <span id="cityspan"></span>
+                        <label>City</label>
+                        <input type="hidden"  name="City" value='{{$temp['City']}}' id="city">{{$temp['City']}}
                     </div>
                     <div class="form-group has-feedback">
-                        <select class="form-control" name='State'>
-                            <option>Andhra pradesh</option>
-                            <option>Telangana</option>
-                            <option>Maharastra</option>
-                            <option>Karnataka</option>
-                            <option>Madya Pradesh</option>
-                            <option>Arunachal Pradesh</option>
-                            <option>Kasmir</option>
-                            <option>Kasi</option>
-                        </select>
-                        <span id="statespan"></span>
+                        <label>State</label>
+                        <input type="hidden"
+                               value='{{$temp['State']}}'  name="State"selected >{{$temp['State']}}
+
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label>PhoneNumber</label>
+                        <input type="hidden"  name="Phonenumber" value='{{$temp['PhoneNumber']}}'>{{$temp['PhoneNumber']}}
+                    </div>
+                    <div class="form-group has-feedback">
+                        <label>Email</label>
+                        <input type="hidden" name="Email" value='{{$temp['EmailId']}}' >{{$temp['EmailId']}}
                     </div>
                     <div class="row">
-                        
-                        <!-- /.col -->
+
+                        <div class="col-xs-4">
+                            <a href="{{URL::route('registration2')}}"><input type="button" value="back"   class="btn btn-primary btn-block btn-flat"></a>
+
+                        </div>
                         <div class="col-xs-4">
 
-                            <button type="submit"  id="next" class="btn btn-primary btn-block btn-flat">next</button>
+                            <input type="submit"  id ="next" class="btn btn-primary btn-block btn-flat">
                         </div>
-                        <br>
+
 
                         <!-- /.col -->
                     </div>
                 </form>
+                @if (count($errors) > 0)
+                <div class="alert alert-danger">
+                    <ul>
+                        @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
+                </div>
+                @endif
 
 
-                <a href="{{URL::route('indlogin')}}" class="text-center">I already have a membership</a>
             </div>
             <!-- /.form-box -->
         </div>
