@@ -1,42 +1,63 @@
-function validateEmail(textbox) {
-    if (textbox.value == '') {
-        textbox.setCustomValidity('Required email address');
-    } else if (textbox.validity.typeMismatch) {
-        textbox.setCustomValidity('please enter a valid email address');
-    } else {
-        textbox.setCustomValidity('');
-    }
-    return true;
-}
-function validatePassword(textbox) {
-    if (textbox.value == '') {
-        textbox.setCustomValidity('please enter password');
-    } else if ((textbox.value.length) < 8) {
-        textbox.setCustomValidity('please enter a valid password');
-    }  else {
-        textbox.setCustomValidity('');
-    }
-    return true;
-}
-function validateFullName(textbox) {
-    if (textbox.value == '') {
-        textbox.setCustomValidity('please enter first name');
-    }
-    /*else if (textbox.validity.typeMismatch){
-     textbox.setCustomValidity('please enter a valid email address');
-     }*/
-    else {
-        textbox.setCustomValidity('');
-    }
-    return true;
-}
-function validateRetypePassword(textbox) {
-    if (textbox.value == '') {
-        textbox.setCustomValidity('please enter password');
-    } else if ((textbox.value.length) < 8) {
-        textbox.setCustomValidity('please enter a valid password');
-    }  else {
-        textbox.setCustomValidity('');
-    }
-    return true;
-}
+
+$(document).ready(function () {
+    
+    $("#mail").blur(function () {
+        var mailid = $("#mail").val();      
+      
+        if (mailid == "")
+        {
+            $("#emailspan").html("enter email address");
+        } 
+       
+            
+        else
+        {
+            $("#emailspan").html("");
+        }
+    });
+     $("#password").blur(function () {
+        var password= $("#password").val();      
+      
+        if (password == "")
+        {
+            $("#passwordspan").html("enter password");
+        } 
+            
+        else
+        {
+            $("#passwordspan").html("");
+        }
+    });
+     $("#retypepassword").blur(function () {
+        var retypepassword= $("#retypepassword").val();      
+      
+        if (retypepassword == "")
+        {
+            $("#retypepasswordspan").html("enter retype password");
+        } 
+            
+        else
+        {
+            $("#retypepasswordspan").html("");
+        }
+    });
+    $("#fullname").blur(function () {
+        var first = $("#fullname").val();
+        if (first === "")
+        {
+            $("#fullspan").html("enter FullName");
+        } else if ($.isNumeric(first))
+        {
+            $("#fullspan").html("enter only characters");
+        } else
+        {
+            $("#fullspan").html("");
+        }
+
+
+    });
+   
+   
+
+});
+
