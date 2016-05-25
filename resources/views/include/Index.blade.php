@@ -7,6 +7,7 @@
         <title>Log in</title>
         <script type='text/javascript' src='/js/jquery.js'></script>
         <script type='text/javascript' src='/js/AdminJs.js'></script>
+        
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.6 -->
         <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
@@ -15,11 +16,11 @@
         <!-- Ionicons -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
         <!-- Theme style -->
-           <link rel="stylesheet" href="{{asset('/css/AdminLTE.min.css')}}">
+        <link rel="stylesheet" href="{{asset('/css/AdminLTE.min.css')}}">
         <!-- iCheck -->
         <link rel="stylesheet" href="{{asset('/css/blue.css')}}">
-<style>
-             span
+        <style>
+            span
             {
                 color: red;
             }
@@ -32,16 +33,17 @@
             <div class="login-box-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form method="post" action="{{URL::route('registration')}}">
+                <form method="post" action="{{URL::route('next')}}">
+                    <input type="hidden" name="_token" value="{{csrf_token()}} ">
                     <div class="form-group has-feedback">
-                        <input type="email" class="form-control" placeholder="Email" id="mail" required="">
+                        <input type="email" class="form-control"  name="EmailId" placeholder="Email" id="mail">
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                         <span id="emailspan"></span>
                     </div>
                     <div class="form-group has-feedback">
-                        <input type="password" class="form-control" placeholder="Password" id="password" required="">
+                        <input type="password" class="form-control"name="Password" placeholder="Password" id="password" required="">
                         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                    <span id="passwordspan"></span>
+                        <span id="passwordspan"></span>
                     </div>
                     <div class="row">
                         <div class="col-xs-8">
@@ -83,13 +85,13 @@
         <!-- iCheck -->
         <script src="{{asset('/js/icheck.min.js')}}"></script>
         <script>
-            $(function () {
-                $('input').iCheck({
-                    checkboxClass: 'icheckbox_square-blue',
-                    radioClass: 'iradio_square-blue',
-                    increaseArea: '20%' // optional
-                });
-            });
+$(function () {
+    $('input').iCheck({
+        checkboxClass: 'icheckbox_square-blue',
+        radioClass: 'iradio_square-blue',
+        increaseArea: '20%' // optional
+    });
+});
         </script>
     </body>
 </html>

@@ -46,7 +46,7 @@
                     </div>
                     <div class="form-group has-feedback">
                         <label>Address</label>
-                        <input type="hidden" name="Address" required>{{$temp['Address']}}</textarea>
+                        <input type="hidden" name="Address" value="{{$temp['Address']}}" >{{$temp['Address']}}</textarea>
                     </div>
                     <div class="form-group has-feedback">
                         <label>City</label>
@@ -81,15 +81,8 @@
                         <!-- /.col -->
                     </div>
                 </form>
-                @if (count($errors) > 0)
-                <div class="alert alert-danger">
-                    <ul>
-                        @foreach ($errors->all() as $error)
-                        <li>{{ $error }}</li>
-                        @endforeach
-                    </ul>
-                </div>
-                @endif
+              
+              
 
 
             </div>

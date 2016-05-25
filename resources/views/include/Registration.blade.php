@@ -43,7 +43,7 @@
 
                     </div>
                     <div class="form-group has-feedback">
-                        <textarea class="form-control" placeholder="Address"  name='Address' id="address"required></textarea>
+                        <textarea class="form-control" placeholder="Address"  name='Address'  required id="address"></textarea>
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
                         <span id="addressspan"></span>
                     </div>
@@ -66,16 +66,19 @@
                         <span id="statespan"></span>
                     </div>
                     <div class="row">
-                        
+
                         <!-- /.col -->
                         <div class="col-xs-4">
 
                             <button type="submit"  id="next" class="btn btn-primary btn-block btn-flat">next</button>
                         </div>
                         <br>
-
+                      
                         <!-- /.col -->
                     </div>
+                      @if(isset($success))
+                        {{$success}}
+                        @endif
                 </form>
 
 
@@ -83,6 +86,15 @@
             </div>
             <!-- /.form-box -->
         </div>
+        @if (count($errors) > 0)
+        <div class="alert alert-danger">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
         <!-- /.register-box -->
 
         <!-- jQuery 2.2.0 -->
