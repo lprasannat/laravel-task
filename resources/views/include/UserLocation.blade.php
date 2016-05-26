@@ -29,6 +29,60 @@
         <link rel="stylesheet" href="plugins/daterangepicker/daterangepicker-bs3.css">
         <!-- bootstrap wysihtml5 - text editor -->
         <link rel="stylesheet" href="plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+        <script type="text/javascript">
+
+            var geocoder = new google.maps.Geocoder();
+            var address = "<?php echo $var; ?>";
+
+
+            geocoder.geocode({'address': address}, function (results, status) {
+
+
+                if (status == google.maps.GeocoderStatus.OK) {
+                    var latitude = results[0].geometry.location.lat();
+                    var longitude = results[0].geometry.location.lng();
+
+                }
+
+
+
+                var myCenter = new google.maps.LatLng(latitude, longitude);
+
+
+                function initialize()
+                {
+                    var mapProp = {
+                        center: myCenter,
+                        zoom: 5,
+                        mapTypeId: google.maps.MapTypeId.ROADMAP
+                    };
+
+                    var map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
+
+                    var marker = new google.maps.Marker({
+                        position: myCenter,
+                        title: 'Click to zoom'
+                    });
+
+                    marker.setMap(map);
+
+        // Zoom to 9 when clicking on marker
+                    google.maps.event.addListener(marker, 'click', function () {
+                        map.setZoom(9);
+                        map.setCenter(marker.getPosition());
+                    });
+
+                    $("#myModal").on("shown.bs.modal", function () {
+                        google.maps.event.trigger(googleMap, "resize");
+                        return map.setCenter(myCenter);
+                    });
+                }
+                google.maps.event.addDomListener(window, 'load', initialize);
+
+
+            });
+
+        </script>
 
     </head>
     <body class="hold-transition skin-blue sidebar-mini">
@@ -42,7 +96,6 @@
                     <!-- logo for regular state and mobile devices -->
                     <span class="logo-lg"><b>Admin</b>LTE</span>
                 </a>
-                
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">
                     <!-- Sidebar toggle button-->
@@ -282,7 +335,7 @@
                                             <a href="#" class="btn btn-default btn-flat">Profile</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="{{URL::route('signout')}}" class="btn btn-default btn-flat">Sign out</a>
+                                            <a href="#" class="btn btn-default btn-flat">Sign out</a>
                                         </div>
                                     </li>
                                 </ul>
@@ -330,7 +383,6 @@
                             <ul class="treeview-menu">
                                 <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
                                 <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v3</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -351,35 +403,8 @@
                                 <i class="fa fa-th"></i> <span>Widgets</span>
                                 <small class="label pull-right bg-green">new</small>
                             </a>
+                        </li>
 
-                        </li>
-                        <li>
-                            <a href="{{URL::route('updates')}}">
-                                <i class="fa fa-th"></i> <span>UpdateProfile</span>
-                                <small class="label pull-right bg-green">new</small>
-                            </a>
-
-                        </li>
-                        <li>
-                            <a href="{{URL::route('updatepasswords')}}">
-                                <i class="fa fa-th"></i> <span>UpdatePassword</span>
-                                <small class="label pull-right bg-green">new</small>
-                            </a>
-
-                        </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-pie-chart"></i>
-                                <span>Charts</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/charts/chartjs.html"><i class="fa fa-circle-o"></i> ChartJS</a></li>
-                                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-                                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-                                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
-                            </ul>
-                        </li>
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-laptop"></i>
@@ -400,24 +425,22 @@
                                 <i class="fa fa-edit"></i> <span>Forms</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
-                            <a href="#">
-                                <i class="fa fa-edit"></i> <span>Log</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{URL::route('next')}}"><i class="fa fa-circle-o"></i> Editors</a></li>
+                                <li><a href="pages/forms/general.html"><i class="fa fa-circle-o"></i> General Elements</a></li>
+                                <li><a href="pages/forms/advanced.html"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
+                                <li><a href="pages/forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-edit"></i> <span>FileUpload</span>
+                                <i class="fa fa-edit"></i> <span>Logs</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{URL::route('upload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
+                                <li><a href="{{URL::route('userlocation')}}"><i class="fa fa-circle-o"></i> Log Details</a></li>
                             </ul>
                         </li>
-           
+
 
                         <li class="treeview">
                             <a href="#">
@@ -596,84 +619,25 @@
                                 <div class="box-header">
                                     <i class="fa fa-comments-o"></i>
 
-                                    <h3 class="box-title">Chat</h3>
+                                    <h3 class="box-title">Log Details</h3>
 
-                                    <div class="box-tools pull-right" data-toggle="tooltip" title="Status">
-                                        <div class="btn-group" data-toggle="btn-toggle">
-                                            <button type="button" class="btn btn-default btn-sm active"><i class="fa fa-square text-green"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-square text-red"></i></button>
-                                        </div>
-                                    </div>
+
                                 </div>
                                 <div class="box-body chat" id="chat-box">
+                                  
                                     <!-- chat item -->
-                                    <div class="item">
-                                        <img src="dist/img/user4-128x128.jpg" alt="user image" class="online">
 
-                                        <p class="message">
-                                            <a href="#" class="name">
-                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>
-                                                Mike Doe
-                                            </a>
-                                            I would like to meet you to discuss the latest news about
-                                            the arrival of the new theme. They say it is going to be one the
-                                            best themes on the market
-                                        </p>
-                                        <div class="attachment">
-                                            <h4>Attachments:</h4>
-
-                                            <p class="filename">
-                                                Theme-thumbnail-image.jpg
-                                            </p>
-
-                                            <div class="pull-right">
-                                                <button type="button" class="btn btn-primary btn-sm btn-flat">Open</button>
-                                            </div>
-                                        </div>
-                                        <!-- /.attachment -->
-                                    </div>
                                     <!-- /.item -->
                                     <!-- chat item -->
-                                    <div class="item">
-                                        <img src="dist/img/user3-128x128.jpg" alt="user image" class="offline">
 
-                                        <p class="message">
-                                            <a href="#" class="name">
-                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:15</small>
-                                                Alexander Pierce
-                                            </a>
-                                            I would like to meet you to discuss the latest news about
-                                            the arrival of the new theme. They say it is going to be one the
-                                            best themes on the market
-                                        </p>
-                                    </div>
                                     <!-- /.item -->
                                     <!-- chat item -->
-                                    <div class="item">
-                                        <img src="dist/img/user2-160x160.jpg" alt="user image" class="offline">
 
-                                        <p class="message">
-                                            <a href="#" class="name">
-                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:30</small>
-                                                Susan Doe
-                                            </a>
-                                            I would like to meet you to discuss the latest news about
-                                            the arrival of the new theme. They say it is going to be one the
-                                            best themes on the market
-                                        </p>
-                                    </div>
                                     <!-- /.item -->
                                 </div>
                                 <!-- /.chat -->
                                 <div class="box-footer">
-                                    <div class="input-group">
-                                        <input class="form-control" placeholder="Type message...">
 
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn btn-success"><i class="fa fa-plus"></i></button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <!-- /.box (chat box) -->
@@ -845,8 +809,8 @@
                                         Visitors
                                     </h3>
                                 </div>
-                                <div class="box-body">
-                                    <div id="world-map" style="height: 250px; width: 100%;"></div>
+                                <div class="box-body" >
+                                    <div id="myModal" style="height: 250px; width: 100%;"></div>
                                 </div>
                                 <!-- /.box-body-->
                                 <div class="box-footer no-border">
@@ -1213,7 +1177,7 @@
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
         <script>
-        $.widget.bridge('uibutton', $.ui.button);
+            $.widget.bridge('uibutton', $.ui.button);
         </script>
         <!-- Bootstrap 3.3.6 -->
         <script src="bootstrap/js/bootstrap.min.js"></script>
@@ -1246,3 +1210,4 @@
         <script src="dist/js/demo.js"></script>
     </body>
 </html>
+

@@ -4,6 +4,13 @@
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <title>AdminLTE 2 | Dashboard</title>
+        <script type="text/javascript" src="/js/jquery.js"></script>
+        <script type="text/javascript" src="/js/AdminMap.js" ></script>
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=false"></script>
+
+        <script
+            src="http://maps.googleapis.com/maps/api/js">
+        </script>
         <!-- Tell the browser to be responsive to screen width -->
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.6 -->
@@ -35,6 +42,10 @@
         <div class="wrapper">
 
             <header class="main-header">
+                @if(isset($Address))  
+                {{$Address}}
+                <input type="hidden" id="addressmap"  name="addressmap" value="{{$Address}}">
+                @endif
                 <!-- Logo -->
                 <a href="index2.html" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -42,7 +53,6 @@
                     <!-- logo for regular state and mobile devices -->
                     <span class="logo-lg"><b>Admin</b>LTE</span>
                 </a>
-                
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top">
                     <!-- Sidebar toggle button-->
@@ -330,7 +340,6 @@
                             <ul class="treeview-menu">
                                 <li class="active"><a href="index.html"><i class="fa fa-circle-o"></i> Dashboard v1</a></li>
                                 <li><a href="index2.html"><i class="fa fa-circle-o"></i> Dashboard v2</a></li>
-                                <li><a href="#"><i class="fa fa-circle-o"></i> Dashboard v3</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -351,35 +360,20 @@
                                 <i class="fa fa-th"></i> <span>Widgets</span>
                                 <small class="label pull-right bg-green">new</small>
                             </a>
-
                         </li>
                         <li>
                             <a href="{{URL::route('updates')}}">
                                 <i class="fa fa-th"></i> <span>UpdateProfile</span>
                                 <small class="label pull-right bg-green">new</small>
                             </a>
-
                         </li>
                         <li>
                             <a href="{{URL::route('updatepasswords')}}">
                                 <i class="fa fa-th"></i> <span>UpdatePassword</span>
                                 <small class="label pull-right bg-green">new</small>
                             </a>
+                        </li>
 
-                        </li>
-                        <li class="treeview">
-                            <a href="#">
-                                <i class="fa fa-pie-chart"></i>
-                                <span>Charts</span>
-                                <i class="fa fa-angle-left pull-right"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li><a href="pages/charts/chartjs.html"><i class="fa fa-circle-o"></i> ChartJS</a></li>
-                                <li><a href="pages/charts/morris.html"><i class="fa fa-circle-o"></i> Morris</a></li>
-                                <li><a href="pages/charts/flot.html"><i class="fa fa-circle-o"></i> Flot</a></li>
-                                <li><a href="pages/charts/inline.html"><i class="fa fa-circle-o"></i> Inline charts</a></li>
-                            </ul>
-                        </li>
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-laptop"></i>
@@ -400,12 +394,19 @@
                                 <i class="fa fa-edit"></i> <span>Forms</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
+                            <ul class="treeview-menu">
+                                <li><a href="pages/forms/general.html"><i class="fa fa-circle-o"></i> General Elements</a></li>
+                                <li><a href="pages/forms/advanced.html"><i class="fa fa-circle-o"></i> Advanced Elements</a></li>
+                                <li><a href="pages/forms/editors.html"><i class="fa fa-circle-o"></i> Editors</a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
                             <a href="#">
-                                <i class="fa fa-edit"></i> <span>Log</span>
+                                <i class="fa fa-edit"></i> <span>Logs</span>
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{URL::route('next')}}"><i class="fa fa-circle-o"></i> Editors</a></li>
+                                <li><a href=""><i class="fa fa-circle-o"></i> Log Details</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -417,8 +418,6 @@
                                 <li><a href="{{URL::route('upload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
                             </ul>
                         </li>
-           
-
                         <li class="treeview">
                             <a href="#">
                                 <i class="fa fa-table"></i> <span>Tables</span>
@@ -596,87 +595,64 @@
                                 <div class="box-header">
                                     <i class="fa fa-comments-o"></i>
 
-                                    <h3 class="box-title">Chat</h3>
+                                    <h3 class="box-title">Log Details</h3>
 
-                                    <div class="box-tools pull-right" data-toggle="tooltip" title="Status">
-                                        <div class="btn-group" data-toggle="btn-toggle">
-                                            <button type="button" class="btn btn-default btn-sm active"><i class="fa fa-square text-green"></i>
-                                            </button>
-                                            <button type="button" class="btn btn-default btn-sm"><i class="fa fa-square text-red"></i></button>
-                                        </div>
-                                    </div>
+
                                 </div>
                                 <div class="box-body chat" id="chat-box">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                               
+                                                <th>IpAddress</th>
+                                                <th>BrowserName</th>
+                                                <th>version</th>
+                                                <th>platform</th>
+                                                <th>pattern</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            @if($logs)
+                                            <tr>
+                                                
+                                                <td>{{$logs['ip']}}</td>
+                                                <td>{{$logs['name']}}</td>
+                                                <td>{{$logs['version']}}</td>
+                                                <td>{{$logs['platform']}}</td>
+                                                <td>{{$logs['pattern']}}</td>
+                                            </tr>
+                                            @endif
+                                        </tbody>
+                                    </table>
                                     <!-- chat item -->
-                                    <div class="item">
-                                        <img src="dist/img/user4-128x128.jpg" alt="user image" class="online">
 
-                                        <p class="message">
-                                            <a href="#" class="name">
-                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 2:15</small>
-                                                Mike Doe
-                                            </a>
-                                            I would like to meet you to discuss the latest news about
-                                            the arrival of the new theme. They say it is going to be one the
-                                            best themes on the market
-                                        </p>
-                                        <div class="attachment">
-                                            <h4>Attachments:</h4>
-
-                                            <p class="filename">
-                                                Theme-thumbnail-image.jpg
-                                            </p>
-
-                                            <div class="pull-right">
-                                                <button type="button" class="btn btn-primary btn-sm btn-flat">Open</button>
-                                            </div>
-                                        </div>
-                                        <!-- /.attachment -->
-                                    </div>
                                     <!-- /.item -->
                                     <!-- chat item -->
-                                    <div class="item">
-                                        <img src="dist/img/user3-128x128.jpg" alt="user image" class="offline">
 
-                                        <p class="message">
-                                            <a href="#" class="name">
-                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:15</small>
-                                                Alexander Pierce
-                                            </a>
-                                            I would like to meet you to discuss the latest news about
-                                            the arrival of the new theme. They say it is going to be one the
-                                            best themes on the market
-                                        </p>
-                                    </div>
                                     <!-- /.item -->
                                     <!-- chat item -->
-                                    <div class="item">
-                                        <img src="dist/img/user2-160x160.jpg" alt="user image" class="offline">
 
-                                        <p class="message">
-                                            <a href="#" class="name">
-                                                <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> 5:30</small>
-                                                Susan Doe
-                                            </a>
-                                            I would like to meet you to discuss the latest news about
-                                            the arrival of the new theme. They say it is going to be one the
-                                            best themes on the market
-                                        </p>
-                                    </div>
                                     <!-- /.item -->
                                 </div>
                                 <!-- /.chat -->
                                 <div class="box-footer">
-                                    <div class="input-group">
-                                        <input class="form-control" placeholder="Type message...">
 
-                                        <div class="input-group-btn">
-                                            <button type="button" class="btn btn-success"><i class="fa fa-plus"></i></button>
-                                        </div>
-                                    </div>
                                 </div>
                             </div>
                             <!-- /.box (chat box) -->
+                            <!-- Address-->
+                            <div class="box box-primary">
+                                <div class="box-header">
+                                    <i class="ion ion-clipboard"></i>
+                                    <h3 class="box-title">ADDRESS</h3>
+                                     <div id="googleMap" style="width:500px;height:380px;"></div>
+                                </div>
+                                <!-- /.box-header -->
+                               
+                                <!-- /.box-body -->
+
+                            </div>
 
                             <!-- TO DO List -->
                             <div class="box box-primary">
@@ -1213,7 +1189,7 @@
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
         <script>
-        $.widget.bridge('uibutton', $.ui.button);
+                        $.widget.bridge('uibutton', $.ui.button);
         </script>
         <!-- Bootstrap 3.3.6 -->
         <script src="bootstrap/js/bootstrap.min.js"></script>
@@ -1246,3 +1222,4 @@
         <script src="dist/js/demo.js"></script>
     </body>
 </html>
+

@@ -20,6 +20,8 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Mail;
 use DateTime;
+use Illuminate\Http\Request;
+use phpDocumentor\Reflection\DocBlock\Location;
 
 class AdminController extends Controller {
 
@@ -181,17 +183,205 @@ class AdminController extends Controller {
         return view('include/Registration', ['success' => $success]);
     }
 
-    public function loginNext() {
-        $EmailId = Input::get("EmailId");
+    public function loginNext(Request $request) {
+        session()->regenerate();
+        $Email = Input::get('Email');
         $Password = Input::get('Password');
+
         $HashPassword = md5($Password);
-        $DbPassword = AddUser::select('Password')->where('EmailId', $EmailId)->first();
+//        echo $HashPassword;
+        $DbPassword = AddUser::select('Password', 'Id')->where('EmailId', $Email)->first();
         $DbPassword = json_decode(json_encode($DbPassword), true);
-        //print_r($DbPassword);
-        if ($HashPassword == $DbPassword['Password']) {
-            echo 'hi';
-            //return Redirect::route('homepage');
+        session(['Id' => $DbPassword['Id']]);
+//        print_r($DbPassword);
+
+        foreach ($DbPassword as $value) {
+            if ($HashPassword == $value) {
+
+                $ipAddress = $_SERVER['REMOTE_ADDR'];
+                if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+                    $ipAddress = array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
+                }
+
+                $user['useragent'] = $request->server('HTTP_USER_AGENT');
+                $input['ip'] = $request->ip();
+
+
+
+
+                $u_agent = $_SERVER['HTTP_USER_AGENT'];
+
+                $bname = 'Unknown';
+                $platform = 'Unknown';
+                $version = "";
+
+
+                $ipAddress = $_SERVER['REMOTE_ADDR'];
+                if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+                    $ipAddress = array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
+                }
+
+                $user['useragent'] = $request->server('HTTP_USER_AGENT');
+                $input['ip'] = $request->ip();
+
+
+
+
+
+                //First get the platform?
+                if (preg_match('/linux/i', $u_agent)) {
+                    $platform = 'linux';
+                } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
+                    $platform = 'mac';
+                } elseif (preg_match('/windows|win32/i', $u_agent)) {
+                    $platform = 'windows';
+                }
+
+                // Next get the name of the useragent yes seperately and for good reason
+                if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Opera/i', $u_agent)) {
+                    $bname = 'Internet Explorer';
+                    $ub = "MSIE";
+                } elseif (preg_match('/Firefox/i', $u_agent)) {
+                    $bname = 'Mozilla Firefox';
+                    $ub = "Firefox";
+                } elseif (preg_match('/Chrome/i', $u_agent)) {
+                    $bname = 'Google Chrome';
+                    $ub = "Chrome";
+                } elseif (preg_match('/Safari/i', $u_agent)) {
+                    $bname = 'Apple Safari';
+                    $ub = "Safari";
+                } elseif (preg_match('/Opera/i', $u_agent)) {
+                    $bname = 'Opera';
+                    $ub = "Opera";
+                } elseif (preg_match('/Netscape/i', $u_agent)) {
+                    $bname = 'Netscape';
+                    $ub = "Netscape";
+                }
+
+                // finally get the correct version number
+                $known = array('Version', $ub, 'other');
+                $pattern = '#(?<browser>' . join('|', $known) .
+                        ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+                if (!preg_match_all($pattern, $u_agent, $matches)) {
+                    // we have no matching number just continue
+                }
+
+                // see how many we have
+                $i = count($matches['browser']);
+                if ($i != 1) {
+                    //we will have two since we are not using 'other' argument yet
+                    //see if version is before or after the name
+                    if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
+                        $version = $matches['version'][0];
+                    } else {
+                        $version = $matches['version'][1];
+                    }
+                } else {
+                    $version = $matches['version'][0];
+                }
+
+                // check if we have a number
+                if ($version == null || $version == "") {
+                    $version = "?";
+                }
+
+                $u = array(
+                    'userAgent' => $u_agent,
+                    'name' => $bname,
+                    'version' => $version,
+                    'platform' => $platform,
+                    'pattern' => $pattern
+                );
+
+                $yourbrowser = ['userAgent' => $u_agent, 'name' => $bname, 'version' => $version, 'platform' => $platform, 'pattern' => $pattern];
+                // print_r($yourbrowser);
+                $jsonDetails = json_encode($yourbrowser);
+                //  print_r($jsonDetails);
+                DB::table('AdminLte')->update(['userAgent' => $jsonDetails, 'name' => $yourbrowser['name'], 'version' => $yourbrowser['version'], 'platform' => $yourbrowser['platform'], 'pattern' => $yourbrowser['pattern'], 'ip' => $input['ip'], 'EmailId' => $Email]);
+                AddUser::where('Id', Session::get('Id'))
+                        ->update(['userAgent' => $jsonDetails,
+                            'ip' => $input['ip'],
+                            'name' => $yourbrowser['name'],
+                            'version' => $yourbrowser['version'],
+                            'platform' => $yourbrowser['platform'],
+                            'pattern' => $yourbrowser['pattern']]);
+                $browserDetails = AddUser::select('userAgent', 'ip', 'name', 'version', 'platform', 'pattern')->where('Id', Session::get('Id'))->first();
+                $browserDetails = json_decode(json_encode($browserDetails), TRUE);
+//print_r($browserDetails);
+
+
+
+                $Addresses = session::get('Address');
+
+                return view('include/LoginDetails', ['logs' => $browserDetails, 'Address' => $Addresses]);
+            } else {
+                return view('include/Index');
+            }
         }
+    }
+
+    public function update() {
+        session()->regenerate();
+        $data = Session::get('Id');
+        $browserDetails = AddUser::select('FullName', 'Address', 'City', 'State', 'PhoneNumber', 'EmailId', 'userAgent', 'ip', 'name', 'version', 'platform', 'pattern')->where('Id', Session::get('Id'))->first();
+        $browserDetails = json_decode(json_encode($browserDetails), TRUE);
+        return view('include/Update', ['temp' => $browserDetails]);
+    }
+
+    public function onUpdate() {
+        $FullName = Input::get('FullName');
+        $Address = Input::get('Address');
+        $City = Input::get('City');
+        $State = Input::get('State');
+        $PhoneNumber = Input::get('Phonenumber');
+        $EmailId = Input::get('Email');
+
+        $data = AddUser::where('Id', session::get('Id'))->update(
+                ['FullName' => $FullName,
+                    'Address' => $Address,
+                    'City' => $City,
+                    'State' => $State,
+                    'PhoneNumber' => $PhoneNumber,
+                    'EmailId' => $EmailId
+        ]);
+        if ($data == 1) {
+            return Redirect::route('updates')->with('update', "successfully updated");
+        } else {
+            return Redirect::route('updates')->with('fail', 'updation failed pls try again');
+        }
+    }
+
+    public function ChangePassword() {
+        session()->regenerate();
+        $password = AddUser::select('Password')->where('Id', Session::get('Id'))->first();
+        $password = json_decode(json_encode($password), TRUE);
+        return view('include/PasswordUpdate', ['password' => $password]);
+    }
+
+    public function password() {
+        session()->regenerate();
+        $password = Input::get('Password');
+
+        $password = md5($password);
+        $update = AddUser::where('Id', Session::get('Id'))->update([
+            'Password' => $password,
+        ]);
+        if ($update) {
+            return Redirect::route('updatepasswords')
+                            ->with('password', 'Successfully Updated');
+        } else {
+            return Redirect::route('updatepasswords')
+                            ->with('password', 'Problem in updating.Try again later!');
+        }
+    }
+
+    public function logout() {
+        session()->regenerate();
+       session(['Id'=>null,'EmailId'=>null]);
+        return Redirect::route('indlogin')->with('logout','Successfully loggedout');
+    }
+    public function uploadFile(){
+        return view('include/FileUpload');
     }
 
 }

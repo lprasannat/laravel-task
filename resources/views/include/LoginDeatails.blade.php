@@ -30,16 +30,10 @@
         <div class="login-box">
             <div class="login-logo">
                 <b>Admin</b>LTE  </div>
-            @if ( session()->has('logout') )
-            <div class="alert alert-info">{{ session()->get('logout') }}</div>
-            @endif
-            @if(isset($message))
-            <div class='alert alert-success'>{{$message}}</div>
-            @endif
             <div class="login-box-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form method="post" action="{{URL::route('next')}}">
+                <form method="post" action="">
                     <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
                     <div class="form-group has-feedback">
                         <input type="email" class="form-control"  name="Email" placeholder="Email" id="mail">
