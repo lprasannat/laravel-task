@@ -42,10 +42,7 @@
         <div class="wrapper">
 
             <header class="main-header">
-                @if(isset($Address))  
-                {{$Address}}
-                <input type="hidden" id="addressmap"  name="addressmap" value="{{$Address}}">
-                @endif
+
                 <!-- Logo -->
                 <a href="index2.html" class="logo">
                     <!-- mini logo for sidebar mini 50x50 pixels -->
@@ -415,7 +412,19 @@
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{URL::route('upload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
+                                <li><a href="{{URL::route('FileUpload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
+                                <li><a href="{{URL::route('data')}}"><i class="fa fa-circle-o"></i>VIEW DETAILS</a></li>
+                                <li><a href="{{URL::route('forgot')}}"><i class="fa fa-circle-o"></i>FORGOT PASSWORD</a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-table"></i> <span>userlocation</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="{{URL::route('maps')}}"><i class="fa fa-circle-o"></i>location</a></li>
+
                             </ul>
                         </li>
                         <li class="treeview">
@@ -603,7 +612,7 @@
                                     <table class="table">
                                         <thead>
                                             <tr>
-                                               
+
                                                 <th>IpAddress</th>
                                                 <th>BrowserName</th>
                                                 <th>version</th>
@@ -615,7 +624,7 @@
                                         <tbody>
                                             @if($logs)
                                             <tr>
-                                                
+
                                                 <td>{{$logs['ip']}}</td>
                                                 <td>{{$logs['name']}}</td>
                                                 <td>{{$logs['version']}}</td>
@@ -646,10 +655,13 @@
                                 <div class="box-header">
                                     <i class="ion ion-clipboard"></i>
                                     <h3 class="box-title">ADDRESS</h3>
-                                     <div id="googleMap" style="width:500px;height:380px;"></div>
+                                    <button class="btn btn-info btn-sm pull-right" onclick="getLocation()">User Location</button>
+                                    <p id="demo"></p>
+
+                                    <div id="googleMap" style="height:380px;"></div>
                                 </div>
                                 <!-- /.box-header -->
-                               
+
                                 <!-- /.box-body -->
 
                             </div>
@@ -1189,7 +1201,7 @@
         <script src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
         <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
         <script>
-                        $.widget.bridge('uibutton', $.ui.button);
+                                        $.widget.bridge('uibutton', $.ui.button);
         </script>
         <!-- Bootstrap 3.3.6 -->
         <script src="bootstrap/js/bootstrap.min.js"></script>

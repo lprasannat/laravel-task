@@ -414,7 +414,26 @@
                                 <i class="fa fa-angle-left pull-right"></i>
                             </a>
                             <ul class="treeview-menu">
-                                <li><a href="{{URL::route('upload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
+                                <li><a href=""><i class="fa fa-circle-o"></i>UPLOAD</a></li>
+                            </ul>
+                        </li>
+                        <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-edit"></i> <span>FileUpload</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="{{URL::route('FileUpload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
+                            </ul>
+                        </li>
+                         <li class="treeview">
+                            <a href="#">
+                                <i class="fa fa-table"></i> <span>userlocation</span>
+                                <i class="fa fa-angle-left pull-right"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li><a href="{{URL::route('maps')}}"><i class="fa fa-circle-o"></i>location</a></li>
+                               
                             </ul>
                         </li>
            

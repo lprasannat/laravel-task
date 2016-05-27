@@ -16,14 +16,36 @@
         <link rel="stylesheet" href="{{asset('/dist/css/AdminLTE.min.css')}}">
         <!-- iCheck -->
         <link rel="stylesheet" href="{{asset('/plugins/iCheck/square/blue.css')}}">
-     
+
         <script src="https://code.jquery.com/jquery-2.2.0.min.js"></script>
-		<script src="//oss.maxcdn.com/jquery.form/3.50/jquery.form.min.js"></script>
-                
-                <script src="{{asset('js/progress.js')}}"></script>
-           
-                  <link rel="stylesheet" href="{{asset('/css/FileStyles.css')}}">
-                 
+        <script src="//oss.maxcdn.com/jquery.form/3.50/jquery.form.min.js"></script>
+        <script type="text/javascript" src="jquery.js"></script>
+        <script src="https://cdn.datatables.net/1.10.11/js/jquery.dataTables.min.js"></script>
+        <link href="https://cdn.datatables.net/1.10.11/css/jquery.dataTables.min.css" rel="stylesheet">
+        <link rel="stylesheet" href="{{asset('/css/styles.css')}}">
+        <link rel="stylesheet" href="/css/FileStyles.css">
+
+
+        <script>
+var Data =<?php echo $result; ?>;
+$(document).ready(function () {
+
+    $('#example').DataTable({
+        data: Data,
+        columns: [
+            {title: "Id",data:"Id"},
+            {title: "File",data:"File"},
+            {title: "Type",data:"Type"},
+            {title: "Size",data:"Size"}
+        ]
+    });
+    var table = $('#example').DataTable();
+
+   
+
+
+});
+        </script>
 
     </head>
     <body class="hold-transition login-page">
@@ -36,35 +58,22 @@
             <div class="login-box-body">
                 <p class="login-box-msg">File Upload Progress Bar Example</p>
 
-                <form action="{{URL::route('uploadfile')}}" method="post" enctype="multipart/form-data" >
+                <form  method="post" action=""  enctype="multipart/form-data" >
                     <input type="hidden" name="_token" value="{{csrf_token()}}"/>
 
-                    <div class='formarea'>
-                       
-                         <div class="form-group has-feedback">
-                       
-                        <input type='file' name='file' id="file" />
-                       
-         <span class="error" id="file_error"></span>
-                         </div>  
-                        
-                        <div id="bararea">
-                            <div id="bar"></div>
-                        </div>
-                        <div id='percent'></div>
-                        <div id='status'></div>
-                    </div>
-                     <input type="submit" name="upload" id="upload" class="btn btn-primary btn-sm" value="Upload"/>
-      
-                        
+                    <table id="example" class="display" width="100%">
+
+                    </table>
+
+
                 </form>
 
-                    <!-- /.social-auth-links -->
+                <!-- /.social-auth-links -->
 
             </div>
             <!-- /.login-box-body -->
         </div>
 
     </body>
-    
+
 </html>

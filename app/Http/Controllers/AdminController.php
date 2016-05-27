@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 //namespace App\Http\Controllers\Redirect;
-
+use Datatables;
 use File;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
@@ -16,6 +16,7 @@ use Illuminate\Support\Facades\Input;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Session;
 use App\AddUser;
+use App\Uploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Mail;
@@ -154,7 +155,7 @@ class AdminController extends Controller {
                             ->withInput();
         } else {
             $Email = Input::get('Email');
-            //   echo $Email;
+//   echo $Email;
             $val = Mail::raw($message, function ($message)use($Email) {
 
                         $message->from('lakshmi.nadella@karmanya.co.in', 'lakshmi');
@@ -187,7 +188,7 @@ class AdminController extends Controller {
         session()->regenerate();
         $Email = Input::get('Email');
         $Password = Input::get('Password');
-
+        $EmailId = Session::get('Email');
         $HashPassword = md5($Password);
 //        echo $HashPassword;
         $DbPassword = AddUser::select('Password', 'Id')->where('EmailId', $Email)->first();
@@ -228,7 +229,7 @@ class AdminController extends Controller {
 
 
 
-                //First get the platform?
+//First get the platform?
                 if (preg_match('/linux/i', $u_agent)) {
                     $platform = 'linux';
                 } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
@@ -237,7 +238,7 @@ class AdminController extends Controller {
                     $platform = 'windows';
                 }
 
-                // Next get the name of the useragent yes seperately and for good reason
+// Next get the name of the useragent yes seperately and for good reason
                 if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Opera/i', $u_agent)) {
                     $bname = 'Internet Explorer';
                     $ub = "MSIE";
@@ -258,19 +259,19 @@ class AdminController extends Controller {
                     $ub = "Netscape";
                 }
 
-                // finally get the correct version number
+// finally get the correct version number
                 $known = array('Version', $ub, 'other');
                 $pattern = '#(?<browser>' . join('|', $known) .
                         ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
                 if (!preg_match_all($pattern, $u_agent, $matches)) {
-                    // we have no matching number just continue
+// we have no matching number just continue
                 }
 
-                // see how many we have
+// see how many we have
                 $i = count($matches['browser']);
                 if ($i != 1) {
-                    //we will have two since we are not using 'other' argument yet
-                    //see if version is before or after the name
+//we will have two since we are not using 'other' argument yet
+//see if version is before or after the name
                     if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
                         $version = $matches['version'][0];
                     } else {
@@ -280,7 +281,7 @@ class AdminController extends Controller {
                     $version = $matches['version'][0];
                 }
 
-                // check if we have a number
+// check if we have a number
                 if ($version == null || $version == "") {
                     $version = "?";
                 }
@@ -294,9 +295,9 @@ class AdminController extends Controller {
                 );
 
                 $yourbrowser = ['userAgent' => $u_agent, 'name' => $bname, 'version' => $version, 'platform' => $platform, 'pattern' => $pattern];
-                // print_r($yourbrowser);
+// print_r($yourbrowser);
                 $jsonDetails = json_encode($yourbrowser);
-                //  print_r($jsonDetails);
+//  print_r($jsonDetails);
                 DB::table('AdminLte')->update(['userAgent' => $jsonDetails, 'name' => $yourbrowser['name'], 'version' => $yourbrowser['version'], 'platform' => $yourbrowser['platform'], 'pattern' => $yourbrowser['pattern'], 'ip' => $input['ip'], 'EmailId' => $Email]);
                 AddUser::where('Id', Session::get('Id'))
                         ->update(['userAgent' => $jsonDetails,
@@ -377,11 +378,50 @@ class AdminController extends Controller {
 
     public function logout() {
         session()->regenerate();
-       session(['Id'=>null,'EmailId'=>null]);
-        return Redirect::route('indlogin')->with('logout','Successfully loggedout');
+        session(['Id' => null, 'EmailId' => null]);
+        return Redirect::route('indlogin')->with('logout', 'Successfully loggedout');
     }
-    public function uploadFile(){
+
+    public function maps() {
+        return view('include/userlocation');
+    }
+
+    public function FileUpload() {
+
         return view('include/FileUpload');
+    }
+
+    public function upload() {
+        session()->regenerate();
+        $EmailId = Session::get('EmailId');
+        $input = Input::file('file');
+        $file_name = $input->getClientOriginalName();
+        $file_size = $input->getClientSize();
+        $file_type = $input->getClientMimeType();
+        $input->move("Upload", $input->getClientOriginalName());
+        $upload = Uploads::create(['File' => $file_name, 'Type' => $file_type, 'Size' => $file_size, 'EmailId' => $EmailId]);
+    }
+
+    public function getData() {
+
+        $output_array = [];
+        session()->regenerate();
+
+
+        $get_file = Uploads::select('Id', 'File', 'Type', 'Size')
+                        ->where('EmailId', Session::get('EmailId'))->get();
+        // $get_file = json_decode(json_encode($get_file), TRUE);
+        echo $get_file;
+        $data = $get_file;
+        //$get_file= json_encode($get_file);
+//        return view('include/uploadedfiles', ['result' => $data]);
+    }
+
+    public function forgotPassword() {
+        session()->regenerate();
+        $Id = session::get('Id');
+        $value = AddUser::select('Password');
+        return view('include/ForgotPassword');
     }
 
 }
