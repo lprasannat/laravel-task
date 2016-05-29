@@ -36,7 +36,7 @@
             <div class="login-box-body">
                 <p class="login-box-msg">File Upload Progress Bar Example</p>
 
-                <form action="{{URL::route('uploadfile')}}" method="post" enctype="multipart/form-data" >
+                <form action="{{URL::route('upload')}}" method="post" enctype="multipart/form-data" >
                     <input type="hidden" name="_token" value="{{csrf_token()}}"/>
 
                     <div class='formarea'>

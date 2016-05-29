@@ -70,6 +70,10 @@
                         <label>Email</label>
                         <input type="email" name="Email" value='{{$temp['EmailId']}}' class="form-control" >
                     </div>
+                    <div class="form-group has-feedback">
+                        <label>CreditCardNumber</label>
+                        <input type="text" name="CreditCardNumber"  class="form-control" >
+                    </div>
                     <div class="row">
 
                         <div class="col-xs-4">

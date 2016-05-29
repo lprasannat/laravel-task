@@ -20,9 +20,11 @@ use App\Uploads;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
 use Mail;
+use App\Logs;
 use DateTime;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\DocBlock\Location;
+use Illuminate\Support\Facades\Crypt;
 
 class AdminController extends Controller {
 
@@ -188,9 +190,10 @@ class AdminController extends Controller {
         session()->regenerate();
         $Email = Input::get('Email');
         $Password = Input::get('Password');
-        $EmailId = Session::get('Email');
+        session(['Email' => $Email]);
         $HashPassword = md5($Password);
 //        echo $HashPassword;
+
         $DbPassword = AddUser::select('Password', 'Id')->where('EmailId', $Email)->first();
         $DbPassword = json_decode(json_encode($DbPassword), true);
         session(['Id' => $DbPassword['Id']]);
@@ -297,16 +300,16 @@ class AdminController extends Controller {
                 $yourbrowser = ['userAgent' => $u_agent, 'name' => $bname, 'version' => $version, 'platform' => $platform, 'pattern' => $pattern];
 // print_r($yourbrowser);
                 $jsonDetails = json_encode($yourbrowser);
-//  print_r($jsonDetails);
-                DB::table('AdminLte')->update(['userAgent' => $jsonDetails, 'name' => $yourbrowser['name'], 'version' => $yourbrowser['version'], 'platform' => $yourbrowser['platform'], 'pattern' => $yourbrowser['pattern'], 'ip' => $input['ip'], 'EmailId' => $Email]);
-                AddUser::where('Id', Session::get('Id'))
-                        ->update(['userAgent' => $jsonDetails,
-                            'ip' => $input['ip'],
-                            'name' => $yourbrowser['name'],
-                            'version' => $yourbrowser['version'],
-                            'platform' => $yourbrowser['platform'],
-                            'pattern' => $yourbrowser['pattern']]);
-                $browserDetails = AddUser::select('userAgent', 'ip', 'name', 'version', 'platform', 'pattern')->where('Id', Session::get('Id'))->first();
+                //print_r($jsonDetails);
+//                DB::table('AdminLte')->update(['userAgent' => $jsonDetails, 'name' => $yourbrowser['name'], 'version' => $yourbrowser['version'], 'platform' => $yourbrowser['platform'], 'pattern' => $yourbrowser['pattern'], 'ip' => $input['ip'], 'EmailId' => $Email]);
+                Logs::create(['userAgent' => $jsonDetails,
+                    'ip' => $input['ip'],
+                    'name' => $yourbrowser['name'],
+                    'version' => $yourbrowser['version'],
+                    'platform' => $yourbrowser['platform'],
+                    'Email' => Session::get('Email'),
+                ]);
+                $browserDetails = Logs::select('userAgent', 'ip', 'name', 'version', 'platform', 'updated_at')->where('Email', Session::get('Email'))->orderBy('updated_at', 'desc')->take(5)->get();
                 $browserDetails = json_decode(json_encode($browserDetails), TRUE);
 //print_r($browserDetails);
 
@@ -316,7 +319,8 @@ class AdminController extends Controller {
 
                 return view('include/LoginDetails', ['logs' => $browserDetails, 'Address' => $Addresses]);
             } else {
-                return view('include/Index');
+                $error = "invalid credentials";
+                return view('include/Index', ['error' => $error]);
             }
         }
     }
@@ -324,7 +328,7 @@ class AdminController extends Controller {
     public function update() {
         session()->regenerate();
         $data = Session::get('Id');
-        $browserDetails = AddUser::select('FullName', 'Address', 'City', 'State', 'PhoneNumber', 'EmailId', 'userAgent', 'ip', 'name', 'version', 'platform', 'pattern')->where('Id', Session::get('Id'))->first();
+        $browserDetails = AddUser::select('FullName', 'Address', 'City', 'State', 'PhoneNumber', 'EmailId')->where('Id', Session::get('Id'))->first();
         $browserDetails = json_decode(json_encode($browserDetails), TRUE);
         return view('include/Update', ['temp' => $browserDetails]);
     }
@@ -336,6 +340,8 @@ class AdminController extends Controller {
         $State = Input::get('State');
         $PhoneNumber = Input::get('Phonenumber');
         $EmailId = Input::get('Email');
+        $CreditCardNumber = Input::get('CreditCardNumber');
+        $encrypted = Crypt::encrypt($CreditCardNumber);
 
         $data = AddUser::where('Id', session::get('Id'))->update(
                 ['FullName' => $FullName,
@@ -343,7 +349,7 @@ class AdminController extends Controller {
                     'City' => $City,
                     'State' => $State,
                     'PhoneNumber' => $PhoneNumber,
-                    'EmailId' => $EmailId
+                    'EmailId' => $EmailId, 'CreditCardNumber' => $encrypted
         ]);
         if ($data == 1) {
             return Redirect::route('updates')->with('update', "successfully updated");
@@ -393,13 +399,13 @@ class AdminController extends Controller {
 
     public function upload() {
         session()->regenerate();
-        $EmailId = Session::get('EmailId');
         $input = Input::file('file');
+        echo $input;
         $file_name = $input->getClientOriginalName();
         $file_size = $input->getClientSize();
         $file_type = $input->getClientMimeType();
         $input->move("Upload", $input->getClientOriginalName());
-        $upload = Uploads::create(['File' => $file_name, 'Type' => $file_type, 'Size' => $file_size, 'EmailId' => $EmailId]);
+        Uploads::create(['File' => $file_name, 'Type' => $file_type, 'Size' => $file_size, 'EmailId' => Session::get('Email')]);
     }
 
     public function getData() {
@@ -409,19 +415,130 @@ class AdminController extends Controller {
 
 
         $get_file = Uploads::select('Id', 'File', 'Type', 'Size')
-                        ->where('EmailId', Session::get('EmailId'))->get();
+                        ->where('EmailId', Session::get('Email'))->get();
         // $get_file = json_decode(json_encode($get_file), TRUE);
-        echo $get_file;
+
         $data = $get_file;
         //$get_file= json_encode($get_file);
-//        return view('include/uploadedfiles', ['result' => $data]);
+        return view('include/uploadedfiles', ['result' => $data]);
+    }
+
+    public function forgotPasswordView() {
+        return view('include/ForgotPassword');
     }
 
     public function forgotPassword() {
         session()->regenerate();
-        $Id = session::get('Id');
-        $value = AddUser::select('Password');
-        return view('include/ForgotPassword');
+        $EmailId = Input::get('EmailId');
+        $value = AddUser::select('Password')->where('EmailId', Session::get('Email'))->get();
+        $value = json_decode(json_encode($value), true);
+        foreach ($value as $values) {
+            foreach ($values as $val) {
+
+                if (!$val) {
+                    return Redirect::route('forgotpassword')
+                                    ->with('message', 'This email address is not registered');
+                } else {
+                    $ldate = new DateTime;
+                    $hours = $ldate->format('H:i');
+
+                    $hours = explode(":", $hours);
+                    $hours = implode("", $hours);
+
+                    $spcl_char = '!@#$%&*()_=+]}[{;:,<.>?|';
+                    $spcl_char = str_shuffle($spcl_char);
+                    $spcl_char = substr($spcl_char, 0, 5);
+                    $FullName = Input::get('FullName');
+                    $Address = Input::get('Address');
+                    $City = Input::get('City');
+                    $State = Input::get('State');
+
+
+                    $FullName = strtolower($FullName);
+                    $City = strtolower($City);
+                    $State = strtolower($State);
+                    $string = $City . $State;
+                    $com = $string . $FullName;
+                    $com = str_split($com);
+                    $alphabets = str_split("abcdefghijklmnopqrstvuwxyz");
+                    $string = str_split($string);
+                    $name = str_split($FullName);
+                    $arr = null;
+                    $ex = null;
+                    $count = 0;
+                    for ($x = 0; $x < count($string); $x++) {
+                        $count = 0;
+                        for ($y = 0; $y < count($name); $y++) {
+                            if ($string[$x] == $name[$y]) {
+                                $count = 1;
+                            }
+                        }
+                        if ($count == 0) {
+                            $arr.= $string[$x];
+                        }
+                    }
+//        echo $arr, "<br>";
+                    if (strlen($arr) < 11) {
+                        $length = strlen($arr);
+                        for ($x = 0; $x < count($alphabets); $x++) {
+                            $count = 0;
+                            for ($y = 0; $y < count($com); $y++) {
+                                if ($alphabets[$x] == $com[$y]) {
+                                    $count = 1;
+                                }
+                            }
+                            if ($count == 0) {
+                                $ex.= $alphabets[$x];
+                            }
+                            if (strlen($ex) + $length == 11) {
+                                $x = count($alphabets);
+                            }
+                        }
+                    }
+
+                    $string = $arr . $ex;
+
+                    $upper = strtoupper(substr($string, 0, 2));
+                    $rand = str_shuffle($spcl_char . $hours . $upper);
+                    $str = str_shuffle(substr($string, 2, 9));
+
+
+                    $message = substr($str, 0, 4) . $rand . substr($str, 4, 5);
+                    $password = Mail::raw($message, function ($message)use($EmailId) {
+
+                                $message->from('lakshmi.nadella@karmanya.co.in', 'lakshmi');
+                                $message->to($EmailId)->subject("your Password");
+                            });
+                    if ($password) {
+                        $success = null;
+                        $success.="Mails sent successfully";
+                    } else {
+                        $success.="Mails not send";
+                    }
+                    $message = md5($message);
+                    $user = AddUser::where('EmailId', Session::get('Email'))->update(['Password' => $message]);
+                    
+                }
+            }
+        }
+        return view('include/ForgotPassword', ['success' => $success]);
+    }
+
+    public function viewProfile() {
+        session()->regenerate();
+        $value = DB::table('AdminLte')->select('CreditCardNumber')->where('EmailId', Session::get('Email'))->get();
+        $value = json_decode(json_encode($value));
+        foreach ($value as $i) {
+            global $result;
+            $result = $i->CreditCardNumber;
+            $result = Crypt::decrypt($result);
+        }
+
+        $getdata = AddUser::select('FullName', 'Address', 'City', 'State', 'PhoneNumber', 'EmailId')->where('EmailId', Session::get('Email'))->get();
+        $getdata = json_decode(json_encode($getdata), true);
+        foreach ($getdata as $data) {
+            return view('include/ViewProfile', ['temp' => $data, 'results' => $result]);
+        }
     }
 
 }

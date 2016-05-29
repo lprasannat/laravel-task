@@ -370,6 +370,12 @@
                                 <small class="label pull-right bg-green">new</small>
                             </a>
                         </li>
+                        <li>
+                            <a href="{{URL::route('viewprofile')}}">
+                                <i class="fa fa-th"></i> <span>ViewProfile</span>
+                                <small class="label pull-right bg-green">View</small>
+                            </a>
+                        </li>
 
                         <li class="treeview">
                             <a href="#">
@@ -414,7 +420,7 @@
                             <ul class="treeview-menu">
                                 <li><a href="{{URL::route('FileUpload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
                                 <li><a href="{{URL::route('data')}}"><i class="fa fa-circle-o"></i>VIEW DETAILS</a></li>
-                                <li><a href="{{URL::route('forgot')}}"><i class="fa fa-circle-o"></i>FORGOT PASSWORD</a></li>
+                                <li><a href="{{URL::route('forgotpassword')}}"><i class="fa fa-circle-o"></i>FORGOT PASSWORD</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -609,30 +615,8 @@
 
                                 </div>
                                 <div class="box-body chat" id="chat-box">
-                                    <table class="table">
-                                        <thead>
-                                            <tr>
+                                    <table id="example" class="table table-striped table-bordered" cellspacing="0" width="100%">
 
-                                                <th>IpAddress</th>
-                                                <th>BrowserName</th>
-                                                <th>version</th>
-                                                <th>platform</th>
-                                                <th>pattern</th>
-
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            @if($logs)
-                                            <tr>
-
-                                                <td>{{$logs['ip']}}</td>
-                                                <td>{{$logs['name']}}</td>
-                                                <td>{{$logs['version']}}</td>
-                                                <td>{{$logs['platform']}}</td>
-                                                <td>{{$logs['pattern']}}</td>
-                                            </tr>
-                                            @endif
-                                        </tbody>
                                     </table>
                                     <!-- chat item -->
 
@@ -1232,6 +1216,24 @@
         <script src="dist/js/pages/dashboard.js"></script>
         <!-- AdminLTE for demo purposes -->
         <script src="dist/js/demo.js"></script>
+        <script>
+                                        var Data = <?php echo json_encode($logs); ?>;
+                                        alert(Data);
+                                        $(document).ready(function () {
+                                            $('#example').DataTable({
+                                                data: Data,
+                                                columns: [
+                                                    {title: "userAgent", data: "userAgent"},
+                                                    {title: "ip", data: "ip"},
+                                                    {title: "name", data: "name"},
+                                                    {title: "version", data: "version"},
+                                                ]
+
+                                            });
+                                            var table = $('#example').DataTable();
+
+                                        });
+        </script>
     </body>
 </html>
 
