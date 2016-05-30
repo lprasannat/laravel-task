@@ -421,6 +421,7 @@
                                 <li><a href="{{URL::route('FileUpload')}}"><i class="fa fa-circle-o"></i>UPLOAD</a></li>
                                 <li><a href="{{URL::route('data')}}"><i class="fa fa-circle-o"></i>VIEW DETAILS</a></li>
                                 <li><a href="{{URL::route('forgotpassword')}}"><i class="fa fa-circle-o"></i>FORGOT PASSWORD</a></li>
+                                <li><a href="{{URL::route('zone')}}"><i class="fa fa-circle-o"></i>TIME ZONE</a></li>
                             </ul>
                         </li>
                         <li class="treeview">

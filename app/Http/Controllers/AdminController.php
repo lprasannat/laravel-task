@@ -25,6 +25,7 @@ use DateTime;
 use Illuminate\Http\Request;
 use phpDocumentor\Reflection\DocBlock\Location;
 use Illuminate\Support\Facades\Crypt;
+use App\TimeZone;
 
 class AdminController extends Controller {
 
@@ -400,7 +401,7 @@ class AdminController extends Controller {
     public function upload() {
         session()->regenerate();
         $input = Input::file('file');
-        echo $input;
+
         $file_name = $input->getClientOriginalName();
         $file_size = $input->getClientSize();
         $file_type = $input->getClientMimeType();
@@ -517,7 +518,6 @@ class AdminController extends Controller {
                     }
                     $message = md5($message);
                     $user = AddUser::where('EmailId', Session::get('Email'))->update(['Password' => $message]);
-                    
                 }
             }
         }
@@ -539,6 +539,39 @@ class AdminController extends Controller {
         foreach ($getdata as $data) {
             return view('include/ViewProfile', ['temp' => $data, 'results' => $result]);
         }
+    }
+
+    public function timeZone() {
+        $tzlist = timezone_abbreviations_list();
+        $tzlist = json_decode(json_encode($tzlist), true);
+        foreach ($tzlist as $value) {
+            foreach ($value as $val) {
+                $offset = $val['offset'];
+                $name = $val['timezone_id'];
+                $result = TimeZone::create([
+                            'name' => $name,
+                            'offset' => $offset
+                ]);
+                $get_file = TimeZone::select('Id', 'name', 'offset')
+                        ->get();
+                //$get_file = json_decode(json_encode($get_file), TRUE);
+
+                $data = $get_file;
+                //$get_file= json_encode($get_file);
+                return view('include/TimeZone', ['result' => $data]);
+            }
+        }
+    }
+
+    public function onTimeZone() {
+
+        $get_file = TimeZone::select('Id', 'name', 'offset')->get();
+        $get_file=  json_decode(json_encode($get_file),true);
+        foreach($get_file as $value){
+//            print_r($value);
+       return view('include/TimeZoneEdit',['result'=>$value]);
+        }
+       
     }
 
 }
