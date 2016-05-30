@@ -25,38 +25,6 @@
         <link rel="stylesheet" href="{{asset('/css/styles.css')}}">
         <link rel="stylesheet" href="/css/FileStyles.css">
 
-
-        <script>
-var Data =<?php echo $result; ?>;
-$(document).ready(function () {
-
-    $('#timezone').DataTable({
-        data: Data,
-        columns: [
-            {title: "Id", data: "Id"},
-            {title: "name", data: "name"},
-            {title: "offset", data: "offset"},
-        ]
-    });
-    var table = $('#timezone').DataTable();
-
-
-    $('#timezone tbody').on('click', 'tr', function () {
-        if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-        } else {
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
-    });
-
-    $('#button').click(function () {
-        table.row('.selected').remove().draw(false);
-    });
-
-});
-        </script>
-
     </head>
     <body class="hold-transition login-page">
         <div class="login-box">
@@ -66,14 +34,11 @@ $(document).ready(function () {
             </div>
 
             <div class="login-box-body">
-                <p class="login-box-msg">File Upload Progress Bar Example</p>
-                <a href="">Edit</a>
-                <form  method="post" action="{{URL::route('onzone')}}"  enctype="multipart/form-data" >
+                <p class="login-box-msg">EXPORT DATA TO EXCEL FORMAT</p>
+                
+                <form  method="post" action=""  enctype="multipart/form-data" >
                     <input type="hidden" name="_token" value="{{csrf_token()}}"/>
-
-                    <table id="timezone" class="display" width="100%">
-                        <input type="button" id="button"  class="btn btn-success" name="delete">
-                    </table>
+                    <input type="submit" name="export" class="btn btn-success" value="EXPORT">
 
 
                 </form>

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 //namespace App\Http\Controllers\Redirect;
+use FPDF;
+use Excel;
 use Datatables;
 use File;
 use Illuminate\Foundation\Bus\DispatchesJobs;
@@ -566,12 +568,55 @@ class AdminController extends Controller {
     public function onTimeZone() {
 
         $get_file = TimeZone::select('Id', 'name', 'offset')->get();
-        $get_file=  json_decode(json_encode($get_file),true);
-        foreach($get_file as $value){
+        $get_file = json_decode(json_encode($get_file), true);
+        foreach ($get_file as $value) {
 //            print_r($value);
-       return view('include/TimeZoneEdit',['result'=>$value]);
+            return view('include/TimeZoneEdit', ['result' => $value]);
         }
-       
+    }
+
+    public function excelFormatAdminLte() {
+        $users = AddUser::select('*')->get();
+        Excel::create('AdminLte', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+    public function excelFormatLogs() {
+        $users = Logs::select('*')->get();
+        Excel::create('Logs', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+    public function excelFormatTimeZone() {
+        $users = TimeZone::select('*')->get();
+        Excel::create('TimeZone', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+    public function excelFormatUpload() {
+        $users = Uploads::select('*')->get();
+        Excel::create('Uploads', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+    public function pdfFormatAdminLte() {
+        
+        Fpdf::AddPage();
+        Fpdf::SetFont('Arial','B',16);
+        Fpdf::Cell(40,10,'Hello World!');
+        Fpdf::Output();
     }
 
 }
