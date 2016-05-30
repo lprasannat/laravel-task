@@ -422,8 +422,14 @@
                                 <li><a href="{{URL::route('data')}}"><i class="fa fa-circle-o"></i>VIEW DETAILS</a></li>
                                 <li><a href="{{URL::route('forgotpassword')}}"><i class="fa fa-circle-o"></i>FORGOT PASSWORD</a></li>
                                 <li><a href="{{URL::route('zone')}}"><i class="fa fa-circle-o"></i>TIME ZONE</a></li>
-                                <li><a href="{{URL::route('format')}}"><i class="fa fa-circle-o"></i>EXCEL FORMAT</a></li>
-                                <li><a href="{{URL::route('logformat')}}"><i class="fa fa-circle-o"></i>EXCEL FORMAT</a></li>
+                                <li><a href="{{URL::route('format')}}"><i class="fa fa-circle-o"></i> ADMIN LTE EXCEL FORMAT</a></li>
+                                <li><a href="{{URL::route('logformat')}}"><i class="fa fa-circle-o"></i> LOGS EXCEL FORMAT</a></li>
+                                <li><a href="{{URL::route('timeformat')}}"><i class="fa fa-circle-o"></i>TIME ZONE EXCEL FORMAT</a></li>
+                                <li><a href="{{URL::route('uploadformat')}}"><i class="fa fa-circle-o"></i>UPLOADS EXCEL FORMAT</a></li>
+                                <li><a href="{{URL::route('uploadspdf')}}"><i class="fa fa-circle-o"></i>UPLOADS PDF</a></li>
+                                <li><a href="{{URL::route('pdfformat')}}"><i class="fa fa-circle-o"></i>ADMIN LTE PDF</a></li>
+                                <li><a href="{{URL::route('logpdf')}}"><i class="fa fa-circle-o"></i>LOGS PDF</a></li>
+                                <li><a href="{{URL::route('timepdf')}}"><i class="fa fa-circle-o"></i>TIME ZONE PDF</a></li>
                             </ul>
                         </li>
                         <li class="treeview">
@@ -1220,8 +1226,8 @@
         <!-- AdminLTE for demo purposes -->
         <script src="dist/js/demo.js"></script>
         <script>
-                                        var Data = <?php echo json_encode($logs); ?>;
-                                        alert(Data);
+                                        var Data = <?php echo ($logs); ?>;
+
                                         $(document).ready(function () {
                                             $('#example').DataTable({
                                                 data: Data,
@@ -1234,8 +1240,9 @@
 
                                             });
                                             var table = $('#example').DataTable();
-
+                                            
                                         });
+
         </script>
     </body>
 </html>

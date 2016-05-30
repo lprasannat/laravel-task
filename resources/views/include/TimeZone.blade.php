@@ -39,20 +39,27 @@ $(document).ready(function () {
         ]
     });
     var table = $('#timezone').DataTable();
-
+//
+//
+//    $('#timezone tbody').on('click', 'tr', function () {
+//        if ($(this).hasClass('selected')) {
+//            $(this).removeClass('selected');
+//        } else {
+//            table.$('tr.selected').removeClass('selected');
+//            $(this).addClass('selected');
+//        }
+//    });
+//
+//    $('#button').click(function () {
+//        table.row('.selected').remove().draw(false);
+//    });
 
     $('#timezone tbody').on('click', 'tr', function () {
-        if ($(this).hasClass('selected')) {
-            $(this).removeClass('selected');
-        } else {
-            table.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
+        var data = table.row(this).data();
+        //alert('You clicked on ' + data[0] + '\'s row');
+        window.location.href = "{{URL::route('onzone')}}";
     });
 
-    $('#button').click(function () {
-        table.row('.selected').remove().draw(false);
-    });
 
 });
         </script>
@@ -67,12 +74,12 @@ $(document).ready(function () {
 
             <div class="login-box-body">
                 <p class="login-box-msg">File Upload Progress Bar Example</p>
-                <a href="">Edit</a>
+                
                 <form  method="post" action="{{URL::route('onzone')}}"  enctype="multipart/form-data" >
                     <input type="hidden" name="_token" value="{{csrf_token()}}"/>
 
                     <table id="timezone" class="display" width="100%">
-                        <input type="button" id="button"  class="btn btn-success" name="delete">
+                       
                     </table>
 
 

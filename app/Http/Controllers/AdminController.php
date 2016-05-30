@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 //namespace App\Http\Controllers\Redirect;
-use FPDF;
+use PDF;
 use Excel;
 use Datatables;
 use File;
@@ -313,7 +313,7 @@ class AdminController extends Controller {
                     'Email' => Session::get('Email'),
                 ]);
                 $browserDetails = Logs::select('userAgent', 'ip', 'name', 'version', 'platform', 'updated_at')->where('Email', Session::get('Email'))->orderBy('updated_at', 'desc')->take(5)->get();
-                $browserDetails = json_decode(json_encode($browserDetails), TRUE);
+                
 //print_r($browserDetails);
 
 
@@ -569,13 +569,81 @@ class AdminController extends Controller {
 
         $get_file = TimeZone::select('Id', 'name', 'offset')->get();
         $get_file = json_decode(json_encode($get_file), true);
-        foreach ($get_file as $value) {
-//            print_r($value);
-            return view('include/TimeZoneEdit', ['result' => $value]);
-        }
+        
+//         print_r($value);
+            return view('include/TimeZoneEdit', ['result' => $get_file]);
+        
     }
 
-   
+    public function excelFormatAdminLte() {
+        $users = AddUser::select('*')->get();
+        Excel::create('AdminLte', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+    public function excelFormatLogs() {
+        $users = Logs::select('*')->get();
+        Excel::create('Logs', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+    public function excelFormatTimeZone() {
+        $users = TimeZone::select('*')->get();
+        Excel::create('TimeZone', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+    public function excelFormatUpload() {
+        $users = Uploads::select('*')->get();
+        Excel::create('Uploads', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('xls');
+    }
+
+   public function pdfFormatAdminLte() {
+        $users = AddUser::select('*')->get();
+        Excel::create('AddUser', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('pdf');
+    }
+    public function pdfFormatLogs() {
+        $users = Logs::select('*')->get();
+        Excel::create('Logs', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('pdf');
+    }
+     public function pdfFormatUploads() {
+        $users = Uploads::select('*')->get();
+        Excel::create('Uploads', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('pdf');
+    }
+     public function pdfFormatTime() {
+        $users = TimeZone::select('*')->get();
+      return  Excel::create('TimeZone', function($excel) use($users) {
+            $excel->sheet('Sheet 1', function($sheet) use($users) {
+                $sheet->fromArray($users);
+            });
+        })->export('pdf');
+    }
+
 }
 
 ?>

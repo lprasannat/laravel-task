@@ -32,6 +32,7 @@
             <div class="register-box-body">
                 <p class="login-box-msg">timezone values</p>
                 <form  method="post" action=''>
+                    
                     <div class="table-responsive">          
                         <table class="table">
                             <thead>
@@ -41,17 +42,19 @@
                                     <th>offset</th>
                                 </tr>
                             </thead>
-                            <tbody>                                
+                            <tbody> 
+                                @foreach($result as $res)
                                 <tr>
-                                    <td>{{$result['Id']}}</td>
-                                    <td>{{$result['name']}}</td>
-                                    <td>{{$result['offset']}}</td>
+                                    <td>{{$res['Id']}}</td>
+                                   
                                 </tr>
+                                 @endforeach
                             </tbody>
                         </table>
                     </div>                   
                     <input type="button" class="btn btn-success" id="Edit" value="Edit"/>
                     <input type="button" class="btn btn-success" id="Delete" value="Delete"/>
+               
                 </form>
             </div>
             <!-- /.form-box -->
@@ -78,7 +81,6 @@ $(function () {
 
             $(document).ready(function () {
                 $("#Edit").click(function () {
-
                     alert('hi');
                 });
 
