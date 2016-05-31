@@ -1,10 +1,9 @@
-
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <title>Log in</title>
+        <title>AdminLTE 2 | Log in</title>
         <script type='text/javascript' src='/js/jquery.js'></script>
         <script type='text/javascript' src='/js/AdminJs.js'></script>
         
@@ -19,85 +18,58 @@
         <link rel="stylesheet" href="{{asset('/css/AdminLTE.min.css')}}">
         <!-- iCheck -->
         <link rel="stylesheet" href="{{asset('/css/blue.css')}}">
-        <style>
-            span
-            {
-                color: red;
-            }
-        </style>
+
     </head>
     <body class="hold-transition login-page">
         <div class="login-box">
             <div class="login-logo">
-                <b>Admin</b>LTE  </div>
+                <a href="#"><b>Admin</b>LTE</a>
+
+            </div>
+            @if ( session()->has('password') )
+            <div class="alert alert-info">{{ session()->get('password') }}</div>
+            @endif
             @if ( session()->has('logout') )
             <div class="alert alert-info">{{ session()->get('logout') }}</div>
             @endif
-            @if(isset($message))
-            <div class='alert alert-success'>{{$message}}</div>
+
+            <!-- /.login-logo -->
+            @if(isset($error))
+            <div class="alert alert-danger">{{$error}}</div>
             @endif
             <div class="login-box-body">
                 <p class="login-box-msg">Sign in to start your session</p>
 
-                <form method="post" action="{{URL::route('next')}}">
-                    <input type="hidden" name="_token" value="<?php echo csrf_token(); ?>">
+                <form action="{{URL::route('next')}}" method="post">
+                    <input type="hidden" name="_token" value="{{csrf_token()}}"/>
                     <div class="form-group has-feedback">
-                        <input type="email" class="form-control"  name="Email" placeholder="Email" id="mail">
+                        <input type="email" class="form-control" placeholder="Email" name="Email" id="Email" />
                         <span class="glyphicon glyphicon-envelope form-control-feedback"></span>
-                        <span id="emailspan"></span>
+                        <span class="error" id="Email_error"></span>
                     </div>
                     <div class="form-group has-feedback">
-                        <input type="password" class="form-control" name="Password" placeholder="Password" id="password" required="">
+                        <input type="password" class="form-control" placeholder="Password" name="Password" id="Password">
                         <span class="glyphicon glyphicon-lock form-control-feedback"></span>
-                        <span id="passwordspan"></span>
+                        <span class="error" id="PasswordError"></span>
                     </div>
                     <div class="row">
-                        <div class="col-xs-8">
-                            <div class="checkbox icheck">
-                                <label>
-                                    <input type="checkbox"> Remember Me
-                                </label>
-                            </div>
-                        </div>
+
                         <!-- /.col -->
                         <div class="col-xs-4">
-                            <button type="submit" class="btn btn-primary btn-block btn-flat">Sign In</button>
+                            <button type="submit" name="login" id="login" class="btn btn-primary btn-block btn-flat">Log In</button>
                         </div>
                         <!-- /.col -->
                     </div>
                 </form>
 
-                <div class="social-auth-links text-center">
-                    <p>- OR -</p>
-                    <a href="#" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
-                        Facebook</a>
-                    <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
-                        Google+</a>
-                </div>
                 <!-- /.social-auth-links -->
 
-                <a href="#">I forgot my password</a><br>
+                <a href="{{URL::route('forgotpassword')}}"class="text-center">I forgot my password</a><br>
                 <a href="{{URL::route('registration')}}" class="text-center">Register a new membership</a>
 
             </div>
             <!-- /.login-box-body -->
         </div>
-        <!-- /.login-box -->
 
-        <!-- jQuery 2.2.0 -->
-        <script src="/js/jQuery-2.2.0.min.js"></script>
-        <!-- Bootstrap 3.3.6 -->
-        <script src="{{asset('js/bootstrap.min.js')}}"></script>
-        <!-- iCheck -->
-        <script src="{{asset('/js/icheck.min.js')}}"></script>
-        <script>
-$(function () {
-    $('input').iCheck({
-        checkboxClass: 'icheckbox_square-blue',
-        radioClass: 'iradio_square-blue',
-        increaseArea: '20%' // optional
-    });
-});
-        </script>
     </body>
 </html>

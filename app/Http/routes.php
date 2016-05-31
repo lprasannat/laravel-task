@@ -406,7 +406,7 @@ Route::get('/view',array(
     'uses'=>'AdminController@viewProfile'
 ));
 Route::get('/timezone',array(
-    'as'=>'zone',
+    'as'=>'timezone',
     'uses'=>'AdminController@timeZone'
 ));
 Route::get('/ontimezone',array(
@@ -415,7 +415,7 @@ Route::get('/ontimezone',array(
 ));
 Route::get('/Adminexcel',array(
     'as'=>'format',
-    'uses'=>'AdminController@excelFormat'
+    'uses'=>'AdminController@excelFormatAdminLte'
 ));
 Route::get('/logexcel',array(
     'as'=>'logformat',
@@ -432,6 +432,18 @@ Route::get('/uploadexcel',array(
 Route::get('/adminpdf',array(
     'as'=>'pdfformat',
     'uses'=>'AdminController@pdfFormatAdminLte'
+));
+Route::get('/logspdf',array(
+    'as'=>'logpdf',
+    'uses'=>'AdminController@pdfFormatLogs'
+));
+Route::get('/uploadpdf',array(
+    'as'=>'uploadspdf',
+    'uses'=>'AdminController@pdfFormatUploads'
+));
+Route::get('/zones',array(
+    'as'=>'timepdf',
+    'uses'=>'AdminController@pdfFormatTime'
 ));
 /*use App\User;
 Route::get('User',function(){ 

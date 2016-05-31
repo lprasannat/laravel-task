@@ -403,7 +403,6 @@ class AdminController extends Controller {
     public function upload() {
         session()->regenerate();
         $input = Input::file('file');
-
         $file_name = $input->getClientOriginalName();
         $file_size = $input->getClientSize();
         $file_type = $input->getClientMimeType();
@@ -558,7 +557,7 @@ class AdminController extends Controller {
                         ->get();
                 //$get_file = json_decode(json_encode($get_file), TRUE);
 
-                $data = $get_file;
+                $data =$get_file;
                 //$get_file= json_encode($get_file);
                 return view('include/TimeZone', ['result' => $data]);
             }
