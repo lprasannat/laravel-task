@@ -409,6 +409,25 @@ Route::get('/timezone',array(
     'as'=>'timezone',
     'uses'=>'AdminController@timeZone'
 ));
+Route::get('/dataTimeZone/{data}', array(
+    'as' => 'dataTimeZone',
+    'uses' => 'AdminController@dataTimeZone'
+));
+
+Route::get('/dataTimeZoneDelete/{data}', array(
+    'as' => 'dataTimeZoneDelete',
+    'uses' => 'AdminController@dataTimeZoneDelete'
+));
+Route::post('/SaveRows', array(
+    'as' => 'SaveRows',
+    'uses' => 'AdminController@SaveRows'
+));
+Route::get('/ViewdataTimeZone/{data}', array(
+    'as' => 'ViewdataTimeZone',
+    'uses' => 'AdminController@ViewdataTimeZone'
+));
+
+
 Route::get('/ontimezone',array(
     'as'=>'onzone',
     'uses'=>'AdminController@onTimeZone'
@@ -445,6 +464,13 @@ Route::get('/zones',array(
     'as'=>'timepdf',
     'uses'=>'AdminController@pdfFormatTime'
 ));
+
+//FACEBOOK ROUTE----------------------------------------
+Route::get('/facebook',array('as'=>'face','uses'=>'AdminController@redirectToProvider'
+));
+Route::get('/facebook/callback',array('as'=>'book','uses'=>'AdminController@handleProviderCallback'
+));
+
 /*use App\User;
 Route::get('User',function(){ 
     

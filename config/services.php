@@ -34,5 +34,10 @@ return [
         'key' => env('STRIPE_KEY'),
         'secret' => env('STRIPE_SECRET'),
     ],
+    'facebook' => [
+    'client_id' => '884334668360188',
+    'client_secret' => 'baf56a18e8f5a0e009a4d30da1b859ef',
+    'redirect' => 'http://lakshmiprasanna.karmanya.dev/facebook/callback/',
+],
 
 ];

@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 //namespace App\Http\Controllers\Redirect;
+use Laravel\Socialite\Facades\Socialite;
+use DateTimeZone;
 use PDF;
 use Excel;
 use Datatables;
@@ -313,7 +315,7 @@ class AdminController extends Controller {
                     'Email' => Session::get('Email'),
                 ]);
                 $browserDetails = Logs::select('userAgent', 'ip', 'name', 'version', 'platform', 'updated_at')->where('Email', Session::get('Email'))->orderBy('updated_at', 'desc')->take(5)->get();
-                
+
 //print_r($browserDetails);
 
 
@@ -543,35 +545,84 @@ class AdminController extends Controller {
     }
 
     public function timeZone() {
-        $tzlist = timezone_abbreviations_list();
-        $tzlist = json_decode(json_encode($tzlist), true);
-        foreach ($tzlist as $value) {
-            foreach ($value as $val) {
-                $offset = $val['offset'];
-                $name = $val['timezone_id'];
-                $result = TimeZone::create([
-                            'name' => $name,
-                            'offset' => $offset
-                ]);
-                $get_file = TimeZone::select('Id', 'name', 'offset')
-                        ->get();
-                //$get_file = json_decode(json_encode($get_file), TRUE);
 
-                $data =$get_file;
-                //$get_file= json_encode($get_file);
-                return view('include/TimeZone', ['result' => $data]);
+        function timezone_list() {
+            static $timezones = null;
+
+            if ($timezones === null) {
+                $timezones = [];
+                $offsets = [];
+                $now = new DateTime();
+
+                foreach (DateTimeZone::listIdentifiers() as $timezone) {
+                    $time = $now->setTimezone(new DateTimeZone($timezone));
+                    $time = json_decode(json_encode($time), true);
+                    // echo $time['date'];
+                    $offsets[] = $offset = $now->getOffset();
+                    TimeZone::create(['name' => format_timezone_name($timezone), 'offset' => format_GMT_offset($offset)]);
+                    $timezones[$timezone] = '(' . format_GMT_offset($offset) . ') ' . format_timezone_name($timezone);
+                }
             }
+
+            return $timezones;
         }
+
+        function format_GMT_offset($offset) {
+            $hours = intval($offset / 3600);
+            $minutes = abs(intval($offset % 3600 / 60));
+            return ($offset ? sprintf('%+03d:%02d', $hours, $minutes) : '');
+        }
+
+        function format_timezone_name($name) {
+            $name = str_replace('/', ', ', $name);
+            $name = str_replace('_', ' ', $name);
+            $name = str_replace('St ', 'St. ', $name);
+            return $name;
+        }
+
+        $timezone = timezone_list();
+
+        $data = TimeZone::select(['Id', 'name', 'offset'])->get();
+
+        return view('include/TimeZone', ['result' => $data]);
     }
 
-    public function onTimeZone() {
+    public function dataTimeZone($data) {
 
-        $get_file = TimeZone::select('Id', 'name', 'offset')->get();
-        $get_file = json_decode(json_encode($get_file), true);
-        
-//         print_r($value);
-            return view('include/TimeZoneEdit', ['result' => $get_file]);
-        
+        $User = DB::table('timezone')->select("*")->where('Id', '=', $data)->get();
+        $User = json_decode(json_encode($User), true);
+        return view('include/TimeZoneEdit', compact('User'));
+    }
+
+    public function ViewdataTimeZone($data) {
+
+        $User = DB::table('timezone')->where('Id', '=', $data)->select('*')->get();
+
+
+        $User = json_decode(json_encode($User), true);
+// print_r($User);
+
+        return view('include/ViewdataTimeZone', compact('User'));
+    }
+
+    public function dataTimeZoneDelete($data) {
+        DB::table('timezone')->where('Id', '=', $data)->delete();
+        $User = DB::table('timezone')->select("*")->where('Id', '=', $data)->get();
+
+        $User = json_decode(json_encode($User), true);
+        return view('include/dataTimeZoneDelete', compact('User'));
+    }
+
+    public function SaveRows() {
+        $ID = Input::get('Id');
+        $Name = Input::get('Name');
+        $Offset = Input::get('Offset');
+        DB::table('timezone')->where('Id', '=', $ID)->update(['name' => $Name, 'offset' => $Offset]);
+
+        $UserUpdate = DB::table('timezone')->select("*")->where('Id', '=', $ID)->get();
+        $UserUpdate = json_decode(json_encode($UserUpdate), true);
+        //print_r($User);
+        return view('include/RowUpdate', compact('UserUpdate'));
     }
 
     public function excelFormatAdminLte() {
@@ -610,7 +661,7 @@ class AdminController extends Controller {
         })->export('xls');
     }
 
-   public function pdfFormatAdminLte() {
+    public function pdfFormatAdminLte() {
         $users = AddUser::select('*')->get();
         Excel::create('AddUser', function($excel) use($users) {
             $excel->sheet('Sheet 1', function($sheet) use($users) {
@@ -618,6 +669,7 @@ class AdminController extends Controller {
             });
         })->export('pdf');
     }
+
     public function pdfFormatLogs() {
         $users = Logs::select('*')->get();
         Excel::create('Logs', function($excel) use($users) {
@@ -626,7 +678,8 @@ class AdminController extends Controller {
             });
         })->export('pdf');
     }
-     public function pdfFormatUploads() {
+
+    public function pdfFormatUploads() {
         $users = Uploads::select('*')->get();
         Excel::create('Uploads', function($excel) use($users) {
             $excel->sheet('Sheet 1', function($sheet) use($users) {
@@ -634,13 +687,32 @@ class AdminController extends Controller {
             });
         })->export('pdf');
     }
-     public function pdfFormatTime() {
+
+    public function pdfFormatTime() {
         $users = TimeZone::select('*')->get();
-      return  Excel::create('TimeZone', function($excel) use($users) {
-            $excel->sheet('Sheet 1', function($sheet) use($users) {
-                $sheet->fromArray($users);
-            });
-        })->export('pdf');
+        return Excel::create('TimeZone', function($excel) use($users) {
+                    $excel->sheet('Sheet 1', function($sheet) use($users) {
+                        $sheet->fromArray($users);
+                    });
+                })->export('pdf');
+    }
+
+    public function redirectToProvider() {
+        return Socialite::with('facebook')->redirect('facebooks');
+    }
+
+    public function handleProviderCallback() {
+        $user = Socialite::with('facebook')->user();
+        $token = $user->token;
+        print_r($user);
+        $token = $user->token;   
+
+// All Providers
+        $user->getId();
+        $user->getNickname();
+        $user->getName();
+        $user->getEmail();
+        $user->getAvatar();
     }
 
 }

@@ -6,7 +6,7 @@
         <title>AdminLTE 2 | Log in</title>
         <script type='text/javascript' src='/js/jquery.js'></script>
         <script type='text/javascript' src='/js/AdminJs.js'></script>
-        
+
         <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
         <!-- Bootstrap 3.3.6 -->
         <link rel="stylesheet" href="{{asset('/css/bootstrap.min.css')}}">
@@ -59,6 +59,17 @@
                             <button type="submit" name="login" id="login" class="btn btn-primary btn-block btn-flat">Log In</button>
                         </div>
                         <!-- /.col -->
+                        <div class="social-auth-links text-center">
+                            <p>- OR -</p>
+                            <a href="{{URL::route('face')}}" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
+                                Facebook</a>
+                            <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
+                                Google+</a>
+                            <a href="#" class="btn btn-block btn-social btn-linkedin btn-flat"><i class="fa fa-linkedin"></i> Sign in using
+                                LinkedIn</a>
+
+                        </div>
+
                     </div>
                 </form>
 

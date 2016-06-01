@@ -35,7 +35,8 @@
                 </a>
                 <ul class="treeview-menu">
                      <li><a href="{{URL::route('updates')}}"><i class="fa fa-circle-o"></i> Update Profile</a></li>
-                                 </ul>
+                     <li><a href="{{URL::route('viewprofile')}}"><i class="fa fa-circle-o"></i>View profile</a></li>               
+                </ul>
             </li>
            
             <li class="treeview" active>
@@ -69,6 +70,7 @@
                                  <li><a href="{{URL::route('logformat')}}"><i class="fa fa-circle-o"></i> Export User Logs to Excel</a></li>
                                     <li><a href="{{URL::route('timeformat')}}"><i class="fa fa-circle-o"></i> Export File Uploads to Excel</a></li>
                                  <li><a href="{{URL::route('uploadformat')}}"><i class="fa fa-circle-o"></i> Export Time Zone to Excel</a></li>
+                                 
                              </ul>
             </li>
             <li class="treeview ">
