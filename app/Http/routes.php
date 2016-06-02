@@ -470,6 +470,24 @@ Route::get('/facebook',array('as'=>'face','uses'=>'AdminController@redirectToPro
 ));
 Route::get('/facebook/callback',array('as'=>'book','uses'=>'AdminController@handleProviderCallback'
 ));
+Route::get('/redirectdashboard',array(
+    'as'=>'dashboard',
+    'uses'=>'AdminController@redirectDashBoard'
+));
+//GOOGLE+----------------------------------------------
+Route::get('/google',array('as'=>'googlepage','uses'=>'AdminController@google'
+));
+Route::get('/google/callback',array('as'=>'google/callback','uses'=>'AdminController@googleCallback'
+));
+Route::get('/dashboard',array(
+    'as'=>'dashboard',
+    'uses'=>'AdminController@redirectgoogleDashBoard'
+));
+//LINKEDIN-------------------------------------------------
+Route::get('/linkedin',array('as'=>'linkedinpage','uses'=>'AdminController@linkedin'
+));
+Route::get('/linkedin/callback',array('as'=>'linkedin/callback','uses'=>'AdminController@linkedinCallback'
+));
 
 /*use App\User;
 Route::get('User',function(){ 

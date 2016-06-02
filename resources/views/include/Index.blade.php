@@ -63,9 +63,9 @@
                             <p>- OR -</p>
                             <a href="{{URL::route('face')}}" class="btn btn-block btn-social btn-facebook btn-flat"><i class="fa fa-facebook"></i> Sign in using
                                 Facebook</a>
-                            <a href="#" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
+                            <a href="{{URL::route('googlepage')}}" class="btn btn-block btn-social btn-google btn-flat"><i class="fa fa-google-plus"></i> Sign in using
                                 Google+</a>
-                            <a href="#" class="btn btn-block btn-social btn-linkedin btn-flat"><i class="fa fa-linkedin"></i> Sign in using
+                            <a href="{{URL::route('linkedinpage')}}" class="btn btn-block btn-social btn-linkedin btn-flat"><i class="fa fa-linkedin"></i> Sign in using
                                 LinkedIn</a>
 
                         </div>

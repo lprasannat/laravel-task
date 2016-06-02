@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 //namespace App\Http\Controllers\Redirect;
+use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Facades\Socialite;
 use DateTimeZone;
 use PDF;
@@ -39,7 +40,6 @@ class AdminController extends Controller {
         ValidatesRequests;
 
     public function home() {
-
         return view('include/welcome');
     }
 
@@ -49,13 +49,11 @@ class AdminController extends Controller {
 
     public function register() {
         session()->regenerate();
-
         return view('include/Registration');
     }
 
     public function registerstep() {
         session()->regenerate();
-
         $FullName = Input::get('FullName');
         $Address = Input::get('Address');
         $City = Input::get('City');
@@ -206,123 +204,10 @@ class AdminController extends Controller {
 
         foreach ($DbPassword as $value) {
             if ($HashPassword == $value) {
-
-                $ipAddress = $_SERVER['REMOTE_ADDR'];
-                if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
-                    $ipAddress = array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
-                }
-
-                $user['useragent'] = $request->server('HTTP_USER_AGENT');
-                $input['ip'] = $request->ip();
-
-
-
-
-                $u_agent = $_SERVER['HTTP_USER_AGENT'];
-
-                $bname = 'Unknown';
-                $platform = 'Unknown';
-                $version = "";
-
-
-                $ipAddress = $_SERVER['REMOTE_ADDR'];
-                if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
-                    $ipAddress = array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
-                }
-
-                $user['useragent'] = $request->server('HTTP_USER_AGENT');
-                $input['ip'] = $request->ip();
-
-
-
-
-
-//First get the platform?
-                if (preg_match('/linux/i', $u_agent)) {
-                    $platform = 'linux';
-                } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
-                    $platform = 'mac';
-                } elseif (preg_match('/windows|win32/i', $u_agent)) {
-                    $platform = 'windows';
-                }
-
-// Next get the name of the useragent yes seperately and for good reason
-                if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Opera/i', $u_agent)) {
-                    $bname = 'Internet Explorer';
-                    $ub = "MSIE";
-                } elseif (preg_match('/Firefox/i', $u_agent)) {
-                    $bname = 'Mozilla Firefox';
-                    $ub = "Firefox";
-                } elseif (preg_match('/Chrome/i', $u_agent)) {
-                    $bname = 'Google Chrome';
-                    $ub = "Chrome";
-                } elseif (preg_match('/Safari/i', $u_agent)) {
-                    $bname = 'Apple Safari';
-                    $ub = "Safari";
-                } elseif (preg_match('/Opera/i', $u_agent)) {
-                    $bname = 'Opera';
-                    $ub = "Opera";
-                } elseif (preg_match('/Netscape/i', $u_agent)) {
-                    $bname = 'Netscape';
-                    $ub = "Netscape";
-                }
-
-// finally get the correct version number
-                $known = array('Version', $ub, 'other');
-                $pattern = '#(?<browser>' . join('|', $known) .
-                        ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
-                if (!preg_match_all($pattern, $u_agent, $matches)) {
-// we have no matching number just continue
-                }
-
-// see how many we have
-                $i = count($matches['browser']);
-                if ($i != 1) {
-//we will have two since we are not using 'other' argument yet
-//see if version is before or after the name
-                    if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
-                        $version = $matches['version'][0];
-                    } else {
-                        $version = $matches['version'][1];
-                    }
-                } else {
-                    $version = $matches['version'][0];
-                }
-
-// check if we have a number
-                if ($version == null || $version == "") {
-                    $version = "?";
-                }
-
-                $u = array(
-                    'userAgent' => $u_agent,
-                    'name' => $bname,
-                    'version' => $version,
-                    'platform' => $platform,
-                    'pattern' => $pattern
-                );
-
-                $yourbrowser = ['userAgent' => $u_agent, 'name' => $bname, 'version' => $version, 'platform' => $platform, 'pattern' => $pattern];
-// print_r($yourbrowser);
-                $jsonDetails = json_encode($yourbrowser);
-                //print_r($jsonDetails);
-//                DB::table('AdminLte')->update(['userAgent' => $jsonDetails, 'name' => $yourbrowser['name'], 'version' => $yourbrowser['version'], 'platform' => $yourbrowser['platform'], 'pattern' => $yourbrowser['pattern'], 'ip' => $input['ip'], 'EmailId' => $Email]);
-                Logs::create(['userAgent' => $jsonDetails,
-                    'ip' => $input['ip'],
-                    'name' => $yourbrowser['name'],
-                    'version' => $yourbrowser['version'],
-                    'platform' => $yourbrowser['platform'],
-                    'Email' => Session::get('Email'),
-                ]);
-                $browserDetails = Logs::select('userAgent', 'ip', 'name', 'version', 'platform', 'updated_at')->where('Email', Session::get('Email'))->orderBy('updated_at', 'desc')->take(5)->get();
-
-//print_r($browserDetails);
-
-
-
+                $Object = new AdminController();
+                $obj = $Object->logdetails($request);
                 $Addresses = session::get('Address');
-
-                return view('include/LoginDetails', ['logs' => $browserDetails, 'Address' => $Addresses]);
+                return view('include/LoginDetails', ['logs' => $obj]);
             } else {
                 $error = "invalid credentials";
                 return view('include/Index', ['error' => $error]);
@@ -332,13 +217,13 @@ class AdminController extends Controller {
 
     public function update() {
         session()->regenerate();
-        $data = Session::get('Id');
-        $browserDetails = AddUser::select('FullName', 'Address', 'City', 'State', 'PhoneNumber', 'EmailId')->where('Id', Session::get('Id'))->first();
+        $browserDetails = AddUser::select('FullName', 'Address', 'City', 'State', 'PhoneNumber', 'EmailId')->where('EmailId', session::get('Email'))->first();
         $browserDetails = json_decode(json_encode($browserDetails), TRUE);
         return view('include/Update', ['temp' => $browserDetails]);
     }
 
     public function onUpdate() {
+        sessio()->regenerate();
         $FullName = Input::get('FullName');
         $Address = Input::get('Address');
         $City = Input::get('City');
@@ -348,7 +233,7 @@ class AdminController extends Controller {
         $CreditCardNumber = Input::get('CreditCardNumber');
         $encrypted = Crypt::encrypt($CreditCardNumber);
 
-        $data = AddUser::where('Id', session::get('Id'))->update(
+        $data = AddUser::where('Email', Session::get('Email'))->update(
                 ['FullName' => $FullName,
                     'Address' => $Address,
                     'City' => $City,
@@ -420,10 +305,10 @@ class AdminController extends Controller {
 
         $get_file = Uploads::select('Id', 'File', 'Type', 'Size')
                         ->where('EmailId', Session::get('Email'))->get();
-        // $get_file = json_decode(json_encode($get_file), TRUE);
+// $get_file = json_decode(json_encode($get_file), TRUE);
 
         $data = $get_file;
-        //$get_file= json_encode($get_file);
+//$get_file= json_encode($get_file);
         return view('include/uploadedfiles', ['result' => $data]);
     }
 
@@ -557,7 +442,7 @@ class AdminController extends Controller {
                 foreach (DateTimeZone::listIdentifiers() as $timezone) {
                     $time = $now->setTimezone(new DateTimeZone($timezone));
                     $time = json_decode(json_encode($time), true);
-                    // echo $time['date'];
+// echo $time['date'];
                     $offsets[] = $offset = $now->getOffset();
                     TimeZone::create(['name' => format_timezone_name($timezone), 'offset' => format_GMT_offset($offset)]);
                     $timezones[$timezone] = '(' . format_GMT_offset($offset) . ') ' . format_timezone_name($timezone);
@@ -621,7 +506,7 @@ class AdminController extends Controller {
 
         $UserUpdate = DB::table('timezone')->select("*")->where('Id', '=', $ID)->get();
         $UserUpdate = json_decode(json_encode($UserUpdate), true);
-        //print_r($User);
+//print_r($User);
         return view('include/RowUpdate', compact('UserUpdate'));
     }
 
@@ -702,17 +587,201 @@ class AdminController extends Controller {
     }
 
     public function handleProviderCallback() {
+        session()->regenerate();
         $user = Socialite::with('facebook')->user();
-        $token = $user->token;
-        print_r($user);
-        $token = $user->token;   
+        $token = $user->getId();
+        $FaceBookUserName = $user->getName();
+        $FaceBookUserEmail = $user->getEmail();
+        session(['Email' => $FaceBookUserEmail]);
+        $DbEmailId = AddUser::where('EmailId', $FaceBookUserEmail)->count();
+        if ($DbEmailId == 0) {
+            $NewUser = AddUser::create(['FullName' => $FaceBookUserName, 'EmailId' => $FaceBookUserEmail]);
+            $UserToken = AddUser::where('EmailId', $FaceBookUserEmail)->update(['Token' => $token]);
+            return Redirect::route('dashboard');
+        } else {
+            $RetriveEmail = AddUser::where('EmailId', $FaceBookUserEmail)->get();
 
-// All Providers
-        $user->getId();
-        $user->getNickname();
-        $user->getName();
-        $user->getEmail();
-        $user->getAvatar();
+            $LoginUser = AddUser::update(['Token' => $token])->where('EmailId', $FaceBookUserEmail);
+
+            return Redirect::route('dashboard');
+        }
+    }
+
+    public function logdetails(Request $request) {
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+            $ipAddress = array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
+        }
+
+        $user['useragent'] = $request->server('HTTP_USER_AGENT');
+        $input['ip'] = $request->ip();
+
+
+
+
+        $u_agent = $_SERVER['HTTP_USER_AGENT'];
+
+        $bname = 'Unknown';
+        $platform = 'Unknown';
+        $version = "";
+
+
+        $ipAddress = $_SERVER['REMOTE_ADDR'];
+        if (array_key_exists('HTTP_X_FORWARDED_FOR', $_SERVER)) {
+            $ipAddress = array_pop(explode(',', $_SERVER['HTTP_X_FORWARDED_FOR']));
+        }
+
+        $user['useragent'] = $request->server('HTTP_USER_AGENT');
+        $input['ip'] = $request->ip();
+
+
+
+
+
+//First get the platform?
+        if (preg_match('/linux/i', $u_agent)) {
+            $platform = 'linux';
+        } elseif (preg_match('/macintosh|mac os x/i', $u_agent)) {
+            $platform = 'mac';
+        } elseif (preg_match('/windows|win32/i', $u_agent)) {
+            $platform = 'windows';
+        }
+
+// Next get the name of the useragent yes seperately and for good reason
+        if (preg_match('/MSIE/i', $u_agent) && !preg_match('/Opera/i', $u_agent)) {
+            $bname = 'Internet Explorer';
+            $ub = "MSIE";
+        } elseif (preg_match('/Firefox/i', $u_agent)) {
+            $bname = 'Mozilla Firefox';
+            $ub = "Firefox";
+        } elseif (preg_match('/Chrome/i', $u_agent)) {
+            $bname = 'Google Chrome';
+            $ub = "Chrome";
+        } elseif (preg_match('/Safari/i', $u_agent)) {
+            $bname = 'Apple Safari';
+            $ub = "Safari";
+        } elseif (preg_match('/Opera/i', $u_agent)) {
+            $bname = 'Opera';
+            $ub = "Opera";
+        } elseif (preg_match('/Netscape/i', $u_agent)) {
+            $bname = 'Netscape';
+            $ub = "Netscape";
+        }
+        $known = array('Version', $ub, 'other');
+        $pattern = '#(?<browser>' . join('|', $known) .
+                ')[/ ]+(?<version>[0-9.|a-zA-Z.]*)#';
+        if (!preg_match_all($pattern, $u_agent, $matches)) {
+// we have no matching number just continue
+        }
+
+// see how many we have
+        $i = count($matches['browser']);
+        if ($i != 1) {
+//we will have two since we are not using 'other' argument yet
+//see if version is before or after the name
+            if (strripos($u_agent, "Version") < strripos($u_agent, $ub)) {
+                $version = $matches['version'][0];
+            } else {
+                $version = $matches['version'][1];
+            }
+        } else {
+            $version = $matches['version'][0];
+        }
+
+// check if we have a number
+        if ($version == null || $version == "") {
+            $version = "?";
+        }
+
+        $u = array(
+            'userAgent' => $u_agent,
+            'name' => $bname,
+            'version' => $version,
+            'platform' => $platform,
+            'pattern' => $pattern
+        );
+
+        $yourbrowser = ['userAgent' => $u_agent, 'name' => $bname, 'version' => $version, 'platform' => $platform, 'pattern' => $pattern];
+        $jsonDetails = json_encode($yourbrowser);
+//print_r($jsonDetails);
+//                DB::table('AdminLte')->update(['userAgent' => $jsonDetails, 'name' => $yourbrowser['name'], 'version' => $yourbrowser['version'], 'platform' => $yourbrowser['platform'], 'pattern' => $yourbrowser['pattern'], 'ip' => $input['ip'], 'EmailId' => $Email]);
+        Logs::create(['userAgent' => $jsonDetails,
+            'ip' => $input['ip'],
+            'name' => $yourbrowser['name'],
+            'version' => $yourbrowser['version'],
+            'platform' => $yourbrowser['platform'],
+            'Email' => Session::get('Email'),
+        ]);
+        $browserDetails = Logs::select('userAgent', 'ip', 'name', 'version', 'platform', 'updated_at')->where('Email', Session::get('Email'))->orderBy('updated_at', 'desc')->take(5)->get();
+        return $browserDetails;
+//return view('include/RedirectDashBoard', ['values' => $browserDetails]);
+    }
+
+    public function redirectDashBoard(Request $request) {
+        $Object = new AdminController();
+        $obj = $Object->logdetails($request);
+        return view('include/LoginDetails', ['logs' => $obj]);
+    }
+
+    public function google() {
+        return Socialite::with('google')->redirect('google/callback');
+    }
+
+    public function googleCallback(Request $request) {
+        $user = Socialite::with('google')->user();
+        $token = $user->getId();
+        $UserName = $user->getName();
+        $UserEmail = $user->getEmail();
+        session(['Email' => $UserEmail]);
+        $DbEmailId = AddUser::where('EmailId', $UserEmail)->count();
+        if ($DbEmailId == 0) {
+            $NewUser = AddUser::create(['FullName' => $UserName, 'EmailId' => $UserEmail]);
+            $UserToken = AddUser::where('EmailId', $UserEmail)->update(['Token' => $token]);
+            return Redirect::route('dashboard');
+        } else {
+            $RetriveEmail = AddUser::where('EmailId', $UserEmail)->get();
+
+            $LoginUser = AddUser::where('EmailId', $UserEmail)->update(['Token' => $token]);
+
+            return Redirect::route('dashboard');
+        }
+//return view('include/LoginDetails');
+    }
+
+    public function redirectgoogleDashBoard(Request $request) {
+        $Object = new AdminController();
+        $obj = $Object->logdetails($request);
+        return view('include/LoginDetails', ['logs' => $obj]);
+    }
+
+    public function linkedin() {
+        return Socialite::with('linkedin')->redirect('linkedin/callback');
+    }
+
+    public function linkedinCallback() {
+        $user = Socialite::with('linkedin')->user();
+        $token = $user->getId();
+        $UserName = $user->getName();
+        $UserEmail = $user->getEmail();
+        session(['Email' => $UserEmail]);
+        $DbEmailId = AddUser::where('EmailId', $UserEmail)->count();
+        if ($DbEmailId == 0) {
+            $NewUser = AddUser::create(['FullName' => $UserName, 'EmailId' => $UserEmail]);
+            $UserToken = AddUser::where('EmailId', $UserEmail)->update(['Token' => $token]);
+            return Redirect::route('dashboard');
+        } else {
+            $RetriveEmail = AddUser::where('EmailId', $UserEmail)->get();
+
+            $LoginUser = AddUser::where('EmailId', $UserEmail)->update(['Token' => $token]);
+
+            return Redirect::route('dashboard');
+        }
+    }
+
+    public function redirectlinkedinDashBoard(Request $request) {
+        $Object = new AdminController();
+        $obj = $Object->logdetails($request);
+        return view('include/LoginDetails', ['logs' => $obj]);
     }
 
 }

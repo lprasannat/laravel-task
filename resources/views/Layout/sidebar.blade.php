@@ -1,5 +1,3 @@
-
-   
     <aside class="main-sidebar">
     <!-- sidebar: style can be found in sidebar.less -->
     <section class="sidebar">
@@ -37,8 +35,7 @@
                      <li><a href="{{URL::route('updates')}}"><i class="fa fa-circle-o"></i> Update Profile</a></li>
                      <li><a href="{{URL::route('viewprofile')}}"><i class="fa fa-circle-o"></i>View profile</a></li>               
                 </ul>
-            </li>
-           
+            </li>           
             <li class="treeview" active>
                 <a href="#">
                 <i class="glyphicon glyphicon-edit"></i>
