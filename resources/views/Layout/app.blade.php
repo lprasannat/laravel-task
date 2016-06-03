@@ -69,26 +69,18 @@
                     @yield('content')
                 </section><!-- /.content -->
             </div><!-- /.content-wrapper -->
+            <div class="content-wrapper">
+                <section class="content">
+                
+                </section>  
+                <section class="content-header">
+                    
+                </section>
 
-
-
-            <!--            <div class="content-wrapper">
-                             Content Header (Page header) 
-                            <section class="content-header">
-                                <h1>
-                                User Profile
-                                <small>Control panel</small>
-                                </h1>
-                                <ol class="breadcrumb">
-                                    <li><a href="#"><i class="fa fa-dashboard"></i> Home</a></li>
-                                    <li class="active">User Profile</li>
-                                </ol>
-                            </section>
-                             Main content 
-                            <section class="content">
-                                @yield('contents')
-                            </section> /.content 
-                        </div>-->
+                <section class="content">
+                    @yield('contents')
+                </section> 
+            </div>
 
 
             <footer class="main-footer">

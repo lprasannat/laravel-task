@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Continent;
+use App\Country;
 //namespace App\Http\Controllers\Redirect;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Facades\Socialite;
@@ -223,7 +225,7 @@ class AdminController extends Controller {
     }
 
     public function onUpdate() {
-        sessio()->regenerate();
+        session()->regenerate();
         $FullName = Input::get('FullName');
         $Address = Input::get('Address');
         $City = Input::get('City');
@@ -232,8 +234,7 @@ class AdminController extends Controller {
         $EmailId = Input::get('Email');
         $CreditCardNumber = Input::get('CreditCardNumber');
         $encrypted = Crypt::encrypt($CreditCardNumber);
-
-        $data = AddUser::where('Email', Session::get('Email'))->update(
+        $data = AddUser::where('EmailId', session::get('Email'))->update(
                 ['FullName' => $FullName,
                     'Address' => $Address,
                     'City' => $City,
@@ -250,7 +251,7 @@ class AdminController extends Controller {
 
     public function ChangePassword() {
         session()->regenerate();
-        $password = AddUser::select('Password')->where('Id', Session::get('Id'))->first();
+        $password = AddUser::select('Password')->where('EmailId', session::get('Email'))->first();
         $password = json_decode(json_encode($password), TRUE);
         return view('include/PasswordUpdate', ['password' => $password]);
     }
@@ -260,7 +261,7 @@ class AdminController extends Controller {
         $password = Input::get('Password');
 
         $password = md5($password);
-        $update = AddUser::where('Id', Session::get('Id'))->update([
+        $update = AddUser::where('EmailId', session::get('Email'))->update([
             'Password' => $password,
         ]);
         if ($update) {
@@ -274,7 +275,7 @@ class AdminController extends Controller {
 
     public function logout() {
         session()->regenerate();
-        session(['Id' => null, 'EmailId' => null]);
+        session(['Email' => null]);
         return Redirect::route('indlogin')->with('logout', 'Successfully loggedout');
     }
 
@@ -298,13 +299,13 @@ class AdminController extends Controller {
     }
 
     public function getData() {
-
+        session()->regenerate();
         $output_array = [];
         session()->regenerate();
 
 
         $get_file = Uploads::select('Id', 'File', 'Type', 'Size')
-                        ->where('EmailId', Session::get('Email'))->get();
+                        ->where('EmailId', session::get('Email'))->get();
 // $get_file = json_decode(json_encode($get_file), TRUE);
 
         $data = $get_file;
@@ -601,7 +602,7 @@ class AdminController extends Controller {
         } else {
             $RetriveEmail = AddUser::where('EmailId', $FaceBookUserEmail)->get();
 
-            $LoginUser = AddUser::update(['Token' => $token])->where('EmailId', $FaceBookUserEmail);
+            $LoginUser = AddUser::where('EmailId', $FaceBookUserEmail)->update(['Token' => $token]);
 
             return Redirect::route('dashboard');
         }
@@ -782,6 +783,18 @@ class AdminController extends Controller {
         $Object = new AdminController();
         $obj = $Object->logdetails($request);
         return view('include/LoginDetails', ['logs' => $obj]);
+    }
+
+    public function countryValue() {
+        $country = Continent::find(1)->country;
+        $country = json_decode($country);
+        echo "<h1>getting values with has many</h1>";
+        foreach ($country as $value) {
+            echo $value->Id."<br>".$value->ContinentId;
+        }
+        $state = Continent::find(1)->state;
+        $state = json_decode($state);
+        // print_r($state);
     }
 
 }

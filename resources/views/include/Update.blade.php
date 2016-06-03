@@ -2,7 +2,7 @@
 @extends('Layout.app')
 @section('content')
 <div class="col-md-6 col-md-offset-3">           
-    @if ( session()->has('update') )
+    @if (session()->has('update') )
     <div class="alert alert-info">{{ session()->get('update') }}</div>
     @endif
 

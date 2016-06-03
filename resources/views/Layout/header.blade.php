@@ -247,7 +247,7 @@
                                         <div class="pull-left">
                                             <a href="#" class="btn btn-default btn-flat">Profile</a>
                                         </div>
-                                        <div class="pull-right">
+                                        <div class="pull-right active">
                                             <a href="{{URL::route('signout')}}" class="btn btn-default btn-flat">Sign out</a>
                                         </div>
                                     </li>

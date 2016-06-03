@@ -360,7 +360,7 @@ Route::get('/update', array(
     'as' => 'updates',
     'uses' => 'AdminController@update'
 ));
-Route::post('/onupdate', array(
+Route::any('/onupdate', array(
     'as' => 'onupdates',
     'uses' => 'AdminController@onUpdate'
 ));
@@ -489,6 +489,10 @@ Route::get('/linkedin',array('as'=>'linkedinpage','uses'=>'AdminController@linke
 Route::get('/linkedin/callback',array('as'=>'linkedin/callback','uses'=>'AdminController@linkedinCallback'
 ));
 
+Route::get('/relation',array(
+    'as'=>'relation',
+    'uses'=>'AdminController@countryValue'
+));
 /*use App\User;
 Route::get('User',function(){ 
     
