@@ -8,6 +8,6 @@ class Logs extends Model {
 
     protected $table = "Log";
     protected $primaryKey = "Id";
-    protected $fillable = ['UserAgent', 'Ip', 'Name', 'Email', 'Version', 'LoginTime', 'Platform','Pattern'];
+    protected $fillable = ['userAgent', 'ip', 'name', 'Email', 'version', 'LoginTime', 'platform','pattern'];
 
 }
