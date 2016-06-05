@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class TimeZone extends Model
 {
     
-    protected $table = "timezone";
+    protected $table = "TimeZone";
     protected $primaryKey = "Id";
-    protected $fillable = ['name','offset','created_at','updated_at'];
+    protected $fillable = ['name','offSet','created_at','IsActive'];
 
 }

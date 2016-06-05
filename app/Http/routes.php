@@ -376,38 +376,38 @@ Route::get('/logout', array(
     'as' => 'signout',
     'uses' => 'AdminController@logout'
 ));
-Route::get('/maps',array(
-    'as'=>'maps',
-    'uses'=>'AdminController@maps'
+Route::get('/maps', array(
+    'as' => 'maps',
+    'uses' => 'AdminController@maps'
 ));
-Route::get('/FileUpload',array(
-    'as'=>'FileUpload',
-    'uses'=>'AdminController@FileUpload'
+Route::get('/FileUpload', array(
+    'as' => 'FileUpload',
+    'uses' => 'AdminController@FileUpload'
 ));
 
-Route::post('uploads',array(
-    'as'=>'upload',
-    'uses'=>'AdminController@upload'
+Route::post('uploads', array(
+    'as' => 'upload',
+    'uses' => 'AdminController@upload'
 ));
-Route::get('/getdata',array(
-    'as'=>'data',
-    'uses'=>'AdminController@getData'
+Route::get('/getdata', array(
+    'as' => 'data',
+    'uses' => 'AdminController@getData'
 ));
-Route::get('/passwordview',array(
-    'as'=>'forgotpassword',
-    'uses'=>'AdminController@forgotPasswordView'
+Route::get('/passwordview', array(
+    'as' => 'forgotpassword',
+    'uses' => 'AdminController@forgotPasswordView'
 ));
-Route::post('/password',array(
-    'as'=>'forgot',
-    'uses'=>'AdminController@forgotPassword'
+Route::post('/password', array(
+    'as' => 'forgot',
+    'uses' => 'AdminController@forgotPassword'
 ));
-Route::get('/view',array(
-    'as'=>'viewprofile',
-    'uses'=>'AdminController@viewProfile'
+Route::get('/view', array(
+    'as' => 'viewprofile',
+    'uses' => 'AdminController@viewProfile'
 ));
-Route::get('/timezone',array(
-    'as'=>'timezone',
-    'uses'=>'AdminController@timeZone'
+Route::get('/timezone', array(
+    'as' => 'timezone',
+    'uses' => 'AdminController@timeZone'
 ));
 Route::get('/dataTimeZone/{data}', array(
     'as' => 'dataTimeZone',
@@ -428,70 +428,73 @@ Route::get('/ViewdataTimeZone/{data}', array(
 ));
 
 
-Route::get('/ontimezone',array(
-    'as'=>'onzone',
-    'uses'=>'AdminController@onTimeZone'
+Route::get('/ontimezone', array(
+    'as' => 'onzone',
+    'uses' => 'AdminController@onTimeZone'
 ));
-Route::get('/Adminexcel',array(
-    'as'=>'format',
-    'uses'=>'AdminController@excelFormatAdminLte'
+Route::get('/Adminexcel', array(
+    'as' => 'format',
+    'uses' => 'AdminController@excelFormatAdminLte'
 ));
-Route::get('/logexcel',array(
-    'as'=>'logformat',
-    'uses'=>'AdminController@excelFormatLogs'
+Route::get('/logexcel', array(
+    'as' => 'logformat',
+    'uses' => 'AdminController@excelFormatLogs'
 ));
-Route::get('/timeexcel',array(
-    'as'=>'timeformat',
-    'uses'=>'AdminController@excelFormatTimeZone'
+Route::get('/timeexcel', array(
+    'as' => 'timeformat',
+    'uses' => 'AdminController@excelFormatTimeZone'
 ));
-Route::get('/uploadexcel',array(
-    'as'=>'uploadformat',
-    'uses'=>'AdminController@excelFormatUpload'
+Route::get('/uploadexcel', array(
+    'as' => 'uploadformat',
+    'uses' => 'AdminController@excelFormatUpload'
 ));
-Route::get('/adminpdf',array(
-    'as'=>'pdfformat',
-    'uses'=>'AdminController@pdfFormatAdminLte'
+Route::get('/adminpdf', array(
+    'as' => 'pdfformat',
+    'uses' => 'AdminController@pdfFormatAdminLte'
 ));
-Route::get('/logspdf',array(
-    'as'=>'logpdf',
-    'uses'=>'AdminController@pdfFormatLogs'
+Route::get('/logspdf', array(
+    'as' => 'logpdf',
+    'uses' => 'AdminController@pdfFormatLogs'
 ));
-Route::get('/uploadpdf',array(
-    'as'=>'uploadspdf',
-    'uses'=>'AdminController@pdfFormatUploads'
+Route::get('/uploadpdf', array(
+    'as' => 'uploadspdf',
+    'uses' => 'AdminController@pdfFormatUploads'
 ));
-Route::get('/zones',array(
-    'as'=>'timepdf',
-    'uses'=>'AdminController@pdfFormatTime'
+Route::get('/zones', array(
+    'as' => 'timepdf',
+    'uses' => 'AdminController@pdfFormatTime'
 ));
 
 //FACEBOOK ROUTE----------------------------------------
-Route::get('/facebook',array('as'=>'face','uses'=>'AdminController@redirectToProvider'
+Route::get('/facebook', array('as' => 'face', 'uses' => 'AdminController@redirectToProvider'
 ));
-Route::get('/facebook/callback',array('as'=>'book','uses'=>'AdminController@handleProviderCallback'
+Route::get('/facebook/callback', array('as' => 'book', 'uses' => 'AdminController@handleProviderCallback'
 ));
-Route::get('/redirectdashboard',array(
-    'as'=>'dashboard',
-    'uses'=>'AdminController@redirectDashBoard'
+Route::get('/redirectdashboard', array(
+    'as' => 'dashboard',
+    'uses' => 'AdminController@redirectDashBoard'
 ));
 //GOOGLE+----------------------------------------------
-Route::get('/google',array('as'=>'googlepage','uses'=>'AdminController@google'
+Route::get('/google', array('as' => 'googlepage', 'uses' => 'AdminController@google'
 ));
-Route::get('/google/callback',array('as'=>'google/callback','uses'=>'AdminController@googleCallback'
+Route::get('/google/callback', array('as' => 'google/callback', 'uses' => 'AdminController@googleCallback'
 ));
-Route::get('/dashboard',array(
-    'as'=>'dashboard',
-    'uses'=>'AdminController@redirectgoogleDashBoard'
+Route::get('/dashboard', array(
+    'as' => 'dashboard',
+    'uses' => 'AdminController@redirectgoogleDashBoard'
 ));
 //LINKEDIN-------------------------------------------------
-Route::get('/linkedin',array('as'=>'linkedinpage','uses'=>'AdminController@linkedin'
+Route::get('/linkedin', array('as' => 'linkedinpage', 'uses' => 'AdminController@linkedin'
 ));
-Route::get('/linkedin/callback',array('as'=>'linkedin/callback','uses'=>'AdminController@linkedinCallback'
+Route::get('/linkedin/callback', array('as' => 'linkedin/callback', 'uses' => 'AdminController@linkedinCallback'
 ));
-
-Route::get('/relation',array(
-    'as'=>'relation',
-    'uses'=>'AdminController@countryValue'
+Route::get('ajaxcall', array(
+    'as' => 'ajaxcall',
+    'uses' => 'AdminController@ajaxcall'
+));
+Route::get('/relation', array(
+    'as' => 'relation',
+    'uses' => 'AdminController@hasValue'
 ));
 /*use App\User;
 Route::get('User',function(){ 

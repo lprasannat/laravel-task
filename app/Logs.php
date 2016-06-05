@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Logs extends Model {
 
-    protected $table = "Logs";
+    protected $table = "Log";
     protected $primaryKey = "Id";
-    protected $fillable = ['userAgent', 'ip', 'name', 'Email', 'version', 'LoginTime', 'platform','pattern'];
+    protected $fillable = ['UserAgent', 'Ip', 'Name', 'Email', 'Version', 'LoginTime', 'Platform','Pattern'];
 
 }

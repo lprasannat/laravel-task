@@ -10,16 +10,9 @@ class Continent extends Model {
     protected $primaryKey = "Id";
     protected $fillable = ['ContinentName', 'ContinentCode', 'CreatedAt', 'IsActive'];
 
-    public function country() {
+    public function Country() {
+
         return $this->hasMany('App\Country', 'ContinentId');
-    }
-
-    public function state() {
-        return $this->hasMany('App\State','CountryId');
-    }
-
-    public function city() {
-        return $this->hasMany('App\City','StateId');
     }
 
 }

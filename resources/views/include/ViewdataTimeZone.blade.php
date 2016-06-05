@@ -13,8 +13,8 @@
         @foreach($User as $value)
         <tr>
             <td>{{$value['Id']}}</td>
-            <td>{{$value['name']}}</td>
-            <td>{{$value['offset']}}</td>
+            <td>{{$value['Name']}}</td>
+            <td>{{$value['Offset']}}</td>
         </tr> 
         @endforeach
     </tbody>

@@ -71,10 +71,10 @@
             </div><!-- /.content-wrapper -->
             <div class="content-wrapper">
                 <section class="content">
-                
+
                 </section>  
                 <section class="content-header">
-                    
+
                 </section>
 
                 <section class="content">
@@ -151,39 +151,28 @@ $.widget.bridge('uibutton', $.ui.button);
 
         <script src="https://cdn.datatables.net/1.10.12/js/jquery.dataTables.min.js" type="text/javascript" ></script>
         <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js" type="text/javascript" ></script>
-
+        <script src="/js/Ajaxjs.js" type="text/javascript"></script>
         <script>
 $(document).ready(function () {
-    $('#timeZone').dataTable({
-        "sPaginationType": "full_numbers"
-
-    });
+   
+//    $('#timeZone').dataTable({
+//        "sPaginationType": "full_numbers"
+//
+//    });
 
     var table = $('#timeZone').DataTable();
     $('#timeZone tbody').on('click', '#edit', function () {
-//        var data = table.row( this ).data();
         var data = table.row($(this).parents('tr')).data();
-        //alert( data[0] +"'s salary is: "+ data[2] )
-        //alert(data);
         window.location.href = '/dataTimeZone/' + data[0];
-        //alert( 'You clicked on '+data[1]+'\'s row' );
     });
     var table2 = $('#timeZone').DataTable();
     $('#timeZone tbody').on('click', '#delete', function () {
-//        var data = table.row( this ).data();
         var data = table2.row($(this).parents('tr')).data();
-        //alert( data[0] +"'s salary is: "+ data[2] )
-        //alert(data);
         window.location.href = '/dataTimeZoneDelete/' + data[0];
-        //alert( 'You clicked on '+data[1]+'\'s row' );
     });
     $('#timeZone tbody').on('click', '#view', function () {
-//        var data = table.row( this ).data();
         var data = table2.row($(this).parents('tr')).data();
-        //alert( data[0] +"'s salary is: "+ data[2] )
-        //alert(data);
         window.location.href = '/ViewdataTimeZone/' + data[0];
-        //alert( 'You clicked on '+data[1]+'\'s row' );
     });
 });
 

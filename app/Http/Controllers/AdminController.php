@@ -4,6 +4,9 @@ namespace App\Http\Controllers;
 
 use App\Continent;
 use App\Country;
+use App\City;
+use App\State;
+use App\Currency;
 //namespace App\Http\Controllers\Redirect;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Facades\Socialite;
@@ -445,7 +448,7 @@ class AdminController extends Controller {
                     $time = json_decode(json_encode($time), true);
 // echo $time['date'];
                     $offsets[] = $offset = $now->getOffset();
-                    TimeZone::create(['name' => format_timezone_name($timezone), 'offset' => format_GMT_offset($offset)]);
+                    TimeZone::create(['Name' => format_timezone_name($timezone), 'Offset' => format_GMT_offset($offset)]);
                     $timezones[$timezone] = '(' . format_GMT_offset($offset) . ') ' . format_timezone_name($timezone);
                 }
             }
@@ -468,21 +471,21 @@ class AdminController extends Controller {
 
         $timezone = timezone_list();
 
-        $data = TimeZone::select(['Id', 'name', 'offset'])->get();
+        $data = TimeZone::select(['Id', 'Name', 'Offset'])->get();
 
         return view('include/TimeZone', ['result' => $data]);
     }
 
     public function dataTimeZone($data) {
 
-        $User = DB::table('timezone')->select("*")->where('Id', '=', $data)->get();
+        $User = DB::table('TimeZone')->select("*")->where('Id', '=', $data)->get();
         $User = json_decode(json_encode($User), true);
         return view('include/TimeZoneEdit', compact('User'));
     }
 
     public function ViewdataTimeZone($data) {
 
-        $User = DB::table('timezone')->where('Id', '=', $data)->select('*')->get();
+        $User = DB::table('TimeZone')->where('Id', '=', $data)->select('*')->get();
 
 
         $User = json_decode(json_encode($User), true);
@@ -492,8 +495,8 @@ class AdminController extends Controller {
     }
 
     public function dataTimeZoneDelete($data) {
-        DB::table('timezone')->where('Id', '=', $data)->delete();
-        $User = DB::table('timezone')->select("*")->where('Id', '=', $data)->get();
+        DB::table('TimeZone')->where('Id', '=', $data)->delete();
+        $User = DB::table('TimeZone')->select("*")->where('Id', '=', $data)->get();
 
         $User = json_decode(json_encode($User), true);
         return view('include/dataTimeZoneDelete', compact('User'));
@@ -503,9 +506,9 @@ class AdminController extends Controller {
         $ID = Input::get('Id');
         $Name = Input::get('Name');
         $Offset = Input::get('Offset');
-        DB::table('timezone')->where('Id', '=', $ID)->update(['name' => $Name, 'offset' => $Offset]);
+        DB::table('TimeZone')->where('Id', '=', $ID)->update(['Name' => $Name, 'Offset' => $Offset]);
 
-        $UserUpdate = DB::table('timezone')->select("*")->where('Id', '=', $ID)->get();
+        $UserUpdate = DB::table('TimeZone')->select("*")->where('Id', '=', $ID)->get();
         $UserUpdate = json_decode(json_encode($UserUpdate), true);
 //print_r($User);
         return view('include/RowUpdate', compact('UserUpdate'));
@@ -785,16 +788,74 @@ class AdminController extends Controller {
         return view('include/LoginDetails', ['logs' => $obj]);
     }
 
-    public function countryValue() {
-        $country = Continent::find(1)->country;
-        $country = json_decode($country);
-        echo "<h1>getting values with has many</h1>";
-        foreach ($country as $value) {
-            echo $value->Id."<br>".$value->ContinentId;
+    public function ajaxcall(Request $request) {
+        $lenght = $request->input('length');
+        $start = $request->input('start');
+        $search = $request->input('search');
+        $order = $request->input('order');
+        $column = $request->input('columns');
+        // if($search['value']=="" && $order[0]['dir']==""){
+        $ajax = DB::table('TimeZone')->select('*')->limit($lenght)->offset($start)->get();
+        $ajax = json_encode($ajax);
+        $count = DB::table('TimeZone')->count();
+        echo "{\"recordsTotal\":" . $count . ",\"recordsFiltered\":" . $count . ", \"data\":" . $ajax . "}";
+    }
+
+//------------------------------------------------------------------------------
+//    Eloquent relationships----------------------------------------------------
+//------------------------------------------------------------------------------
+    public function hasValue() {
+        //--------------------------------------------------------------------------------
+//Getting all country in the Continent Id ----------------------------------------
+//--------------------------------------------------------------------------------       
+        echo "<h1>Getting Country values on Continent Id</h1>";
+        $Country = Continent::find(1)->Country;
+        foreach ($Country as $key) {
+            echo "<strong>Continent Id:</strong> ", $key->ContinentId, "|| <strong> Country Name:</strong>", $key->CountryName, "<br>";
         }
-        $state = Continent::find(1)->state;
-        $state = json_decode($state);
-        // print_r($state);
+        echo "<br><br>";
+// -------------------------------------------------------------------------------     
+//Getting the Continent Name of Country -----------------------------
+//--------------------------------------------------------------------------------
+
+        echo "<h1>Getting Continent values on Country Id:</h1>";
+        $Continent = Country::find(1)->Continent;
+        echo "<strong>Continent Id:</strong>", $Continent->Id, " ||<strong> Continent Name:</strong>", $Continent->ContinentName;
+        echo "<br><br>";
+//------------------------------------------------------------------------------------
+//Getting the Country of the the State with Id --------------------------------------
+//------------------------------------------------------------------------------------
+
+        echo "<h1>Getting Country values on State Id:</h1>";
+        echo "<strong>Country Id:</strong>", State::find(1)->Country->Id;
+        echo "<strong>|| Country Name:</strong>", State::find(1)->Country->CountryName;
+        echo "<br><br>";
+//-----------------------------------------------------------------------------------        
+//Print All States of the Country ------------------------------------
+//-----------------------------------------------------------------------------------
+
+        echo "<h1>Get All State which are in this Country Id 1</h1>";
+        $State = Country::find(1)->State;
+        foreach ($State as $key) {
+            echo "<strong> Id:</strong> ", $key->Id, " ||<strong> Country Name:</strong>", $key->StateName, "<br>";
+        }
+        echo "<br><br>";
+
+//--------------------------------------------------------------------------------------
+// Print All Cities of the State ---------------------------------------------------
+//--------------------------------------------------------------------------------------
+        echo "<h1>Get All Cities in State :</h1>";
+        $City = State::find(1)->City;
+        foreach ($City as $key) {
+            echo "<strong>State Id:</strong> ", $key->StateId, " ||<strong> City Name:</strong>", $key->CityName, "<br>";
+        }
+
+//---------------------------------------------------------------------------------------
+// Print The State Of a City-------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+        echo "<h1>Get State Name of a City:</h1>";
+        $Cityval = City::find(1)->State;
+        echo "<strong>State Id: </strong>", $Cityval->Id, " ||<strong>State Name:</strong>", $Cityval->StateName;
     }
 
 }

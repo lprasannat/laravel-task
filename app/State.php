@@ -8,6 +8,16 @@ class State extends Model {
 
     protected $table = 'State';
     protected $primaryKey = "Id";
-    protected $fillable = ['CountryId','StateName', 'StateCode', 'CreatedAt', 'IsActive'];
+    protected $fillable = ['CountryId', 'StateName', 'StateCode', 'CreatedAt', 'IsActive'];
+
+    public function Country() {
+
+        return $this->belongsTo('App\Country', 'CountryId');
+    }
+
+    public function City() {
+
+        return $this->hasMany('App\City', 'StateId');
+    }
 
 }
