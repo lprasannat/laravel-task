@@ -504,11 +504,6 @@ Route::get('User',function(){
    print_r($user);
    
 });*/
-/*Route::get('config/mail', function(){
-    Mail::send('resources/views/test', array("name" => "lakshmi"), function($message) {
-            $message->to('lprasanna537@gmail.com', 'lakshmi')->subject('testemail');
-        });
 
-});
 
 

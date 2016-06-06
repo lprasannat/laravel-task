@@ -20,4 +20,8 @@ class State extends Model {
         return $this->hasMany('App\City', 'StateId');
     }
 
+    public function likes() {
+        return $this->morphMany('App\City', 'likeable');
+    }
+
 }

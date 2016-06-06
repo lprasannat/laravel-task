@@ -20,4 +20,18 @@ class Country extends Model {
         return $this->hasMany('App\State', 'CountryId');
     }
 
+    public function City() {
+
+        return $this->hasMany('App\City', 'StateId');
+    }
+
+    public function Cities() {
+
+        return $this->hasManyThrough('App\City', 'App\State', 'CountryId', 'Id');
+    }
+
+    public function likes() {
+        return $this->morphMany('App\City', 'likeable');
+    }
+
 }

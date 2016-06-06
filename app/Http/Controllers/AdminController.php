@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Link;
 use App\Continent;
 use App\Country;
 use App\City;
 use App\State;
 use App\Currency;
-//namespace App\Http\Controllers\Redirect;
 use Laravel\Socialite\Two\GoogleProvider;
 use Laravel\Socialite\Facades\Socialite;
 use DateTimeZone;
@@ -749,7 +749,6 @@ class AdminController extends Controller {
 
             return Redirect::route('dashboard');
         }
-//return view('include/LoginDetails');
     }
 
     public function redirectgoogleDashBoard(Request $request) {
@@ -794,10 +793,9 @@ class AdminController extends Controller {
         $search = $request->input('search');
         $order = $request->input('order');
         $column = $request->input('columns');
-        // if($search['value']=="" && $order[0]['dir']==""){
-        $ajax = DB::table('TimeZone')->select('*')->limit($lenght)->offset($start)->get();
+        $ajax = TimeZone::select('*')->limit($lenght)->offset($start)->get();
         $ajax = json_encode($ajax);
-        $count = DB::table('TimeZone')->count();
+        $count = TimeZone::count();
         echo "{\"recordsTotal\":" . $count . ",\"recordsFiltered\":" . $count . ", \"data\":" . $ajax . "}";
     }
 
@@ -834,7 +832,7 @@ class AdminController extends Controller {
 //Print All States of the Country ------------------------------------
 //-----------------------------------------------------------------------------------
 
-        echo "<h1>Get All State which are in this Country Id 1</h1>";
+        echo "<h1>Get All State which are in this Country Id </h1>";
         $State = Country::find(1)->State;
         foreach ($State as $key) {
             echo "<strong> Id:</strong> ", $key->Id, " ||<strong> Country Name:</strong>", $key->StateName, "<br>";
@@ -856,6 +854,68 @@ class AdminController extends Controller {
         echo "<h1>Get State Name of a City:</h1>";
         $Cityval = City::find(1)->State;
         echo "<strong>State Id: </strong>", $Cityval->Id, " ||<strong>State Name:</strong>", $Cityval->StateName;
+        //---------------------------------------------------------------------------------------
+// Print The State Of a Continent-------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+        echo "<h1>Get All State Of a Continent :</h1>";
+        $City = Continent::find(1)->State;
+        foreach ($City as $key) {
+            echo "<strong>State Id:</strong> ", $key->Id, " ||<strong> State Name:</strong>", $key->StateName, "<br>";
+        }
+        //---------------------------------------------------------------------------------------
+// Print The cities Of a Continent-------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+        echo "<h1>Get All cities Of a Continent :</h1>";
+        $City = Continent::find(1)->City;
+        foreach ($City as $key) {
+            echo "<strong>City Id:</strong> ", $key->Id, " ||<strong> City Name:</strong>", $key->CityName, "<br>";
+        }
+        //---------------------------------------------------------------------------------------
+// Print The cities Of a Country-------------------------------------------------------------
+//---------------------------------------------------------------------------------------
+        echo "<h1>Get All cities Of a Country :</h1>";
+        $City = Country::find(1)->City;
+        foreach ($City as $key) {
+            echo "<strong>City Id:</strong> ", $key->Id, " ||<strong> City Name:</strong>", $key->CityName, "<br>";
+        }
+//------------------------------------------------------------------------------------
+//Getting the Continent of the the State with Id --------------------------------------
+//------------------------------------------------------------------------------------
+
+        echo "<h1>Getting Continent values on State Id:</h1>";
+        $City = Continent::find(1)->Continent;
+        foreach ($City as $key) {
+            echo "<strong>StateId:</strong>", $key->Id, "||" . "<strong>continent Id:</strong> ", $key->ContinentId, " ||<strong> Continent Name:</strong>", $key->StateName, "<br>";
+        }
+        //------------------------------------------------------------------------------------
+//Getting the country of the the State with Id --------------------------------------
+//------------------------------------------------------------------------------------
+
+        echo "<h1>Getting country values on State Id:</h1>";
+        $City = Country::find(1)->Cities;
+        foreach ($City as $key) {
+            echo "<strong>City Id:</strong>", $key->Id, " ||<strong> City Name:</strong>", $key->CityName, "<br>";
+        }
+        //------------------------------------------------------------------------------------
+//Getting the country of the the State with Id --------------------------------------
+//------------------------------------------------------------------------------------
+
+        echo "<h1>Getting morph values on State Id:</h1>";
+        $post = State::find(1);
+
+        foreach ($post->City as $like) {
+            echo "<strong>City Id:</strong>", $key->Id, " ||<strong> City Name:</strong>", $key->CityName, "<br>";
+        }
+        //------------------------------------------------------------------------------------
+//Getting the country of the the State with Id --------------------------------------
+//------------------------------------------------------------------------------------
+
+        echo "<h1>Getting morph values on country Id:</h1>";
+        $post = Country::find(1);
+
+        foreach ($post->City as $like) {
+            echo "<strong>City Id:</strong>", $key->Id, " ||<strong> City Name:</strong>", $key->CityName, "<br>";
+        }
     }
 
 }

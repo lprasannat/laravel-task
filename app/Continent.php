@@ -15,4 +15,23 @@ class Continent extends Model {
         return $this->hasMany('App\Country', 'ContinentId');
     }
 
+    public function State() {
+
+        return $this->hasMany('App\State', 'CountryId');
+    }
+
+    public function City() {
+
+        return $this->hasMany('App\City', 'StateId');
+    }
+
+    public function Continent() {
+
+        return $this->hasManyThrough('App\State', 'App\Country', 'ContinentId', 'Id');
+    }
+
+    public function likes() {
+        return $this->morphMany('App\City', 'likeable');
+    }
+
 }

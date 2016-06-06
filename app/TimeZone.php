@@ -9,6 +9,6 @@ class TimeZone extends Model
     
     protected $table = "TimeZone";
     protected $primaryKey = "Id";
-    protected $fillable = ['name','offSet','created_at','IsActive'];
+    protected $fillable = ['Name','OffSet','created_at','IsActive'];
 
 }
