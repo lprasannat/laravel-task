@@ -153,30 +153,30 @@ $.widget.bridge('uibutton', $.ui.button);
         <script src="https://cdn.datatables.net/1.10.12/js/dataTables.bootstrap.min.js" type="text/javascript" ></script>
         <script src="/js/Ajaxjs.js" type="text/javascript"></script>
         <script>
-$(document).ready(function () {
-   
-//    $('#timeZone').dataTable({
-//        "sPaginationType": "full_numbers"
+//$(document).ready(function () {
+//   
+////    $('#timeZone').dataTable({
+////        "sPaginationType": "full_numbers"
+////
+////    });
 //
+//    var table = $('#timeZone').DataTable();
+//    $('#timeZone tbody').on('click', '#edit', function () {
+//        var data = table.row($(this).parents('tr')).data();
+//        window.location.href = '/dataTimeZone/' + data[0];
 //    });
-
-    var table = $('#timeZone').DataTable();
-    $('#timeZone tbody').on('click', '#edit', function () {
-        var data = table.row($(this).parents('tr')).data();
-        window.location.href = '/dataTimeZone/' + data[0];
-    });
-    var table2 = $('#timeZone').DataTable();
-    $('#timeZone tbody').on('click', '#delete', function () {
-        var data = table2.row($(this).parents('tr')).data();
-        window.location.href = '/dataTimeZoneDelete/' + data[0];
-    });
-    $('#timeZone tbody').on('click', '#view', function () {
-        var data = table2.row($(this).parents('tr')).data();
-        window.location.href = '/ViewdataTimeZone/' + data[0];
-    });
-});
-
-        </script>
+//    var table2 = $('#timeZone').DataTable();
+//    $('#timeZone tbody').on('click', '#delete', function () {
+//        var data = table2.row($(this).parents('tr')).data();
+//        window.location.href = '/dataTimeZoneDelete/' + data[0];
+//    });
+//    $('#timeZone tbody').on('click', '#view', function () {
+//        var data = table2.row($(this).parents('tr')).data();
+//        window.location.href = '/ViewdataTimeZone/' + data[0];
+//    });
+//});
+//
+//        </script>
 
 
 

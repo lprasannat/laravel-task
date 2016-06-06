@@ -12,7 +12,7 @@ $(document).ready(function () {
                 "targets": -1,
                 "data": null,
                 "render": function (data, type, full, meta) {
-                    return "<a href='dataTimeZone/" + data.Id + "'><button class='one'>EDIT</button></a>" + " <a href='dataTimeZoneDelete/" + data.Id + "'><button class='one'>DELETE</button></a>" + " <a href='ViewdataTimeZone/" + data.Id + "'><button class='view' value='" + JSON.stringify(data) + "'>VIEW</button></a>";
+                    return "<a href='dataTimeZone/" + data.Id + "'><button class='one'><i class='glyphicon glyphicon-pencil'></i>EDIT</button></a>" + " <a href='dataTimeZoneDelete/" + data.Id + "'><button class='one'><i class='glyphicon glyphicon-trash'></i>DELETE</button></a>" + " <a href='ViewdataTimeZone/" + data.Id + "'><button class='view' value='" + JSON.stringify(data) + "'><i class='glyphicon glyphicon-eye-open'></i>VIEW</button></a>";
 
                 }
             }

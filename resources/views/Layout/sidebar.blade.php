@@ -22,20 +22,20 @@
             <li class="treeview active">
 
                 <ul class="treeview-menu">
-                    <li><a href="{{URL::route('updates')}}"><i class="fa fa-circle-o"></i> Update Profile</a></li>
-                    <li><a href="{{URL::route('viewprofile')}}"><i class="fa fa-circle-o"></i> View profile</a></li>               
+                    <li><a href="{{URL::route('updates')}}"><i class="glyphicon glyphicon-pencil"></i> Update Profile</a></li>
+                    <li><a href="{{URL::route('viewprofile')}}"><i class="glyphicon glyphicon-eye-open"></i> View profile</a></li>               
                 </ul>
             </li>           
             <li class="treeview active">
 
                 <ul class="treeview-menu">
-                    <li><a href="{{URL::route('updatepasswords')}}"><i class="fa fa-circle-o"></i> Change Password</a></li>
+                    <li><a href="{{URL::route('updatepasswords')}}"><i class="glyphicon glyphicon-pencil"></i> Change Password</a></li>
                 </ul>
             </li>
             <li class="treeview active">
                 <ul class="treeview-menu">
                     <li><a href="{{URL::route('FileUpload')}}"><i class="fa fa-circle-o"></i> File Upload</a></li>
-                    <li><a href="{{URL::route('data')}}"><i class="fa fa-circle-o"></i> View Files</a></li>
+                    <li><a href="{{URL::route('data')}}"><i class="glyphicon glyphicon-eye-open"></i> View Files</a></li>
                 </ul>
             </li>
             <li class="treeview active">
